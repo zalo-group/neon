@@ -1,0 +1,14 @@
+apply plugin: 'java-library'
+apply plugin: 'idea'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    implementation 'com.google.auto.value:auto-value:1.6.2'
+    implementation "com.google.auto.value:auto-value-annotations:1.6.2"
+    implementation 'com.squareup:javapoet:1.11.1'
+    implementation project(path: ':libzalocore')
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8

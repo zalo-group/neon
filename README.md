@@ -7,6 +7,6 @@ Zarcel là java preprocessor library. Zarcel sử dụng annotation để xử l
 Zarcel Annotation generate các lớp từ thư viện "libzalocore". Do đó đảm bảo rằng ứng dụng đang xài đã implement thư viện này.
 
 ### Work in process
-Hỗ trợ serialize Custom Type.
+Hỗ trợ serialize Custom Type.<br />
 Example
 

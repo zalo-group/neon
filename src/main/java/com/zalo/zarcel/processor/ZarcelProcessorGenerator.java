@@ -1,15 +1,19 @@
 package com.zalo.zarcel.processor;
 
+import com.zalo.zarcel.Exception.ZarcelException;
 import com.zalo.zarcel.ZarcelClass;
 import com.zalo.zarcel.ZarcelProperty;
 
-import java.io.IOException;
-import java.util.*;
-import javax.lang.model.element.*;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
 import javax.annotation.processing.Filer;
+import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.util.Elements;
+import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 class ZarcelProcessorGenerator {
 
@@ -17,23 +21,23 @@ class ZarcelProcessorGenerator {
     private static final byte OBJECT_ARRAY = 1;
     private static final byte CONDITIONAL_OBJECT_ARRAY = 2;
 
+    private static final String ZARCEL_CUSTOM_ADAPTER_NAME = "com.zalo.zarcel.processor.Zarcel.Custom";
+
     private TypeElement type;
     private Elements elements;
     private String packageName;
     private String className;
-    boolean isConditionalObject = false;
+    private boolean isCustomProperty = false;
     private ZarcelClass.Builder classBuilder = ZarcelClass.builder();
-    private ArrayList<Map.Entry<Map.Entry<String, String>, Integer>> conditionalObject;
 
     void init(TypeElement type, Elements elements) {
         this.type = type;
         this.elements = elements;
-        this.packageName = elements.getPackageOf(type).getQualifiedName().toString();
-        this.className = elements.getTypeElement(type.getQualifiedName().toString()).getSimpleName().toString();
-        conditionalObject = new ArrayList<Map.Entry<Map.Entry<String, String>, Integer>>();
+        this.packageName = getPackage(type);
+        this.className = getClassName(type, packageName);
     }
 
-    void generate(TypeElement type, Elements elements, Filer filer) throws IOException {
+    void generate(TypeElement type, Elements elements, Filer filer) throws IOException, ZarcelException {
         init(type, elements);
         parseClassAnnotation();
         parseClass();
@@ -80,18 +84,20 @@ class ZarcelProcessorGenerator {
         classBuilder.setThisPackage(packageName);
     }
 
-    private void parseProperties() {
+    private void parseProperties() throws ZarcelException {
         List<? extends Element> properties = elements.getAllMembers(type);
         for (Element property : properties) {
             parseProperty(property);
         }
     }
 
-    private void parseProperty(Element property) {
+    private void parseProperty(Element property) throws ZarcelException {
         if (property.getKind() != ElementKind.FIELD) return;
 
         for (Modifier modifier : property.getModifiers()) {
-            if (modifier.toString().equals("static") || modifier.toString().equals("private"))
+            if (modifier.toString().equals("static") ||
+                    modifier.toString().equals("private") ||
+                    modifier.toString().equals("transient"))
                 return;
         }
 
@@ -108,10 +114,14 @@ class ZarcelProcessorGenerator {
         }
     }
 
-    private void parsePrimitiveProperty(Element property) {
+    private void parsePrimitiveProperty(Element property) throws ZarcelException {
         // Config
         ZarcelProperty.Builder builder = ZarcelProperty.builder();
         parseInnerAnnotation(property, builder);
+        if (isCustomProperty) {
+            isCustomProperty = false;
+            return;
+        }
         builder.setType(ZarcelProperty.Type.PRIMITIVE);
         builder.setPropertyName(property.getSimpleName().toString());
         // Builder
@@ -132,37 +142,36 @@ class ZarcelProcessorGenerator {
         classBuilder.addProperty(builder.build());
     }
 
-    private void parseDeclaredProperty(Element property) {
+    private void parseDeclaredProperty(Element property) throws ZarcelException {
         // Config
         ZarcelProperty.Builder builder = ZarcelProperty.builder();
         parseInnerAnnotation(property, builder);
-        String objectPackage = elements.getPackageOf(property).toString();
+        if (isCustomProperty) {
+            isCustomProperty = false;
+            return;
+        }
+
+        String objectPackage = elements.getPackageOf(elements.getTypeElement(property.asType().toString())).toString();
         String objectName = elements.getTypeElement(property.asType().toString()).getSimpleName().toString();
         if (objectName.equals("String")) {
             builder.setType(ZarcelProperty.Type.PRIMITIVE)
                     .setDataType(new AbstractMap.SimpleEntry<>(null, "String"))
                     .setPropertyName(property.getSimpleName().toString());
-        } else if (!isConditionalObject) {
+        } else {
             builder.setType(ZarcelProperty.Type.OBJECT)
                     .setDataType(new AbstractMap.SimpleEntry<>(objectPackage, objectName))
                     .setPropertyName(property.getSimpleName().toString());
-        } else if (isConditionalObject) {
-            builder.setDataType(new AbstractMap.SimpleEntry<>(objectPackage, objectName))
-                    .setType(ZarcelProperty.Type.CONDITIONAL_OBJECT)
-                    .setPropertyName(property.getSimpleName().toString());
-            for (Map.Entry<Map.Entry<String, String>, Integer> aConditionalObject : conditionalObject) {
-                builder.addConditionalProperty(aConditionalObject);
-            }
-            // When done
-            conditionalObject.clear();
         }
-        // Build
         classBuilder.addProperty(builder.build());
     }
 
-    private void parseArrayProperty(Element property) {
+    private void parseArrayProperty(Element property) throws ZarcelException {
         ZarcelProperty.Builder builder = ZarcelProperty.builder();
         parseInnerAnnotation(property, builder);
+        if (isCustomProperty) {
+            isCustomProperty = false;
+            return;
+        }
 
         byte type = checkType(property);
         switch (type) {
@@ -172,16 +181,11 @@ class ZarcelProcessorGenerator {
             case OBJECT_ARRAY:
                 parseObjectArray(property, builder);
                 break;
-            case CONDITIONAL_OBJECT_ARRAY:
-                parseConditionalObjectArray(property, builder);
-                break;
         }
         classBuilder.addProperty(builder.build());
     }
 
     private byte checkType(Element property) {
-        if (isConditionalObject)
-            return CONDITIONAL_OBJECT_ARRAY;
         String type = property.asType().toString().replace("[]", "");
         if (type.contains("int") || type.contains("float") || type.contains("double") || type.contains("boolean")) {
             return PRIMITIVE_ARRAY;
@@ -213,7 +217,7 @@ class ZarcelProcessorGenerator {
 
     private void parseObjectArray(Element property, ZarcelProperty.Builder builder) {
 
-        String objectPackage = elements.getPackageOf(property).toString();
+        String objectPackage = elements.getPackageOf(elements.getTypeElement(property.asType().toString().replace("[]", ""))).toString();
         String objectName = elements.getTypeElement(property.asType().toString().replace("[]", ""))
                 .getSimpleName()
                 .toString();
@@ -229,24 +233,7 @@ class ZarcelProcessorGenerator {
         }
     }
 
-    private void parseConditionalObjectArray(Element property, ZarcelProperty.Builder builder) {
-        String objectPackage = elements.getPackageOf(property).toString();
-        String objectName = elements.getTypeElement(property.asType().toString().replace("[]", ""))
-                .getSimpleName()
-                .toString();
-
-        builder.setDataType(new AbstractMap.SimpleEntry<>(objectPackage, objectName))
-                .setType(ZarcelProperty.Type.CONDITIONAL_OBJECT_ARRAY)
-                .setPropertyName(property.getSimpleName().toString());
-
-        for (Map.Entry<Map.Entry<String, String>, Integer> aConditionalObject : conditionalObject) {
-            builder.addConditionalProperty(aConditionalObject);
-        }
-        // When done
-        conditionalObject.clear();
-    }
-
-    private void parseInnerAnnotation(Element property, ZarcelProperty.Builder builder) {
+    private void parseInnerAnnotation(Element property, ZarcelProperty.Builder builder) throws ZarcelException {
 
         //checking another annotations
         List<? extends AnnotationMirror> annotationMirrors = property.getAnnotationMirrors();
@@ -267,40 +254,58 @@ class ZarcelProcessorGenerator {
             }
         }
 
-        Zarcel.Abstract annotationAbstract = property.getAnnotation(Zarcel.Abstract.class);
+        Zarcel.Custom annotationAbstract = property.getAnnotation(Zarcel.Custom.class);
         if (annotationAbstract != null) {
-            isConditionalObject = true;
-            parseAnnotationConditionalObject(property);
+            parseCustomAdapter(property, builder);
         }
     }
 
-    private void parseAnnotationConditionalObject(Element property) {
-        TypeMirror abstractType = elements.getTypeElement("com.zalo.zarcel.processor.Zarcel.Abstract").asType();
+    private void parseCustomAdapter(Element property, ZarcelProperty.Builder builder) throws ZarcelException {
         List<? extends AnnotationMirror> annotationMirrors = property.getAnnotationMirrors();
         for (AnnotationMirror annotationMirror : annotationMirrors) {
+            if (!annotationMirror.getAnnotationType().toString().equals(ZARCEL_CUSTOM_ADAPTER_NAME))
+                continue;
             Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = annotationMirror.getElementValues();
             for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : elementValues.entrySet()) {
                 String key = entry.getKey().getSimpleName().toString();
                 Object value = entry.getValue().getValue();
-                int i = 0;
-                if (key.equals("childClass")) {
-                    List<? extends AnnotationValue> typeMirrors = (List<? extends AnnotationValue>) value;
-                    for (AnnotationValue typeMirror : typeMirrors) {
-                        TypeMirror childClass = ((TypeMirror) typeMirror.getValue());
-                        String fullName = childClass.toString();
-                        String className = elements.getTypeElement(fullName).getSimpleName().toString();
-                        String packageClass = elements.getPackageOf(elements.getTypeElement(fullName)).toString();
-                        conditionalObject.add(
-                                new AbstractMap.SimpleEntry<>(new AbstractMap.SimpleEntry<>(packageClass, className), i++));
+                if (key.equals("adapter")) {
+                    TypeElement typeOfClass = elements.getTypeElement(((DeclaredType) value).asElement().toString());
+                    String customAdapterPackage = getPackage(typeOfClass);
+                    String customAdapterName = getClassName(typeOfClass, customAdapterPackage);
+                    String simpleName = property.getSimpleName().toString();
+
+                    // Check serialize and deserialize
+                    StringBuilder checker = new StringBuilder();
+                    List<? extends Element> valueElements = elements.getAllMembers((TypeElement) ((DeclaredType) value).asElement());
+                    for (Element element : valueElements) {
+                        checker.append(element.getSimpleName().toString());
                     }
-                } else if (key.equals("type")) {
-                    List<? extends AnnotationValue> typeMirrors = (List<? extends AnnotationValue>) value;
-                    for (AnnotationValue typeMirror : typeMirrors) {
-                        Integer childType = ((Integer) typeMirror.getValue());
-                        conditionalObject.get(i++).setValue(childType);
+
+                    if (checker.toString().contains("serialize") && checker.toString().contains("createFromSerialized")) {
+
+                    } else {
+                        throw new ZarcelException(customAdapterName + " does not implement valid ZarcelAdapter for custom property.");
                     }
+
+                    // Build and return
+                    builder.setCustomAdapter(true);
+                    isCustomProperty = true;
+                    builder.setPropertyName(simpleName);
+                    builder.setType(ZarcelProperty.Type.CUSTOM_ADAPTER);
+                    builder.setDataType(new AbstractMap.SimpleEntry<>(customAdapterPackage, customAdapterName));
+                    classBuilder.addProperty(builder.build());
+                    return;
                 }
             }
         }
+    }
+
+    String getPackage(TypeElement typeElement) {
+        return elements.getPackageOf(typeElement).toString();
+    }
+
+    String getClassName(TypeElement typeElement, String packageName) {
+        return typeElement.getQualifiedName().toString().replace(packageName + ".", "");
     }
 }

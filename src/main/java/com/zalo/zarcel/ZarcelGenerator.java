@@ -4,13 +4,14 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import com.zalo.zarcel.Exception.ZarcelException;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Map;
+
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Filer;
 
@@ -95,8 +96,8 @@ class ZarcelGenerator {
                     break;
                 case OBJECT_ARRAY:
                     if (property.objectNullable()) {
-                        builder.beginControlFlow("if ($L.$L != null && $L.$L.length > 0)", argClassName,
-                                property.propertyName(), argClassName, property.propertyName())
+                        builder.beginControlFlow("if ($L.$L != null)", argClassName,
+                                property.propertyName())
                                 .addStatement("writer.writeBool(true)")
                                 .addStatement("writer.writeInt32($L.$L.length)", argClassName, property.propertyName())
                                 .beginControlFlow("for($T i : $L.$L)",
@@ -136,68 +137,26 @@ class ZarcelGenerator {
                                 .endControlFlow();
                     }
                     break;
-                case CONDITIONAL_OBJECT:
-                    if (property.conditionalProperties() != null && property.conditionalProperties().size() > 0) {
-                        ZarcelArrayList<Map.Entry<Map.Entry<String, String>, Integer>> arrayList = property.conditionalProperties();
+                case CUSTOM_ADAPTER:
+
+                    if (!property.objectNullable()) {
+                        builder.beginControlFlow("");
+                        builder.addStatement("$T tmp$$customAdapter = new $T()",
+                                ClassName.get(property.dataType().getKey(), property.dataType().getValue()),
+                                ClassName.get(property.dataType().getKey(), property.dataType().getValue()));
+                        builder.addStatement("tmp$$customAdapter.serialize($L.$L,writer)",
+                                argClassName, property.propertyName());
+                        builder.endControlFlow("");
+                    } else {
                         builder.beginControlFlow("if ($L.$L != null)", argClassName, property.propertyName())
-                                .addStatement("writer.writeBool(true)")
-                                .beginControlFlow("if ($L.$L instanceof $T)", argClassName, property.propertyName(),
-                                        ClassName.get(arrayList.get(0).getKey().getKey(), arrayList.get(0).getKey().getValue()))
-                                .addStatement("writer.writeInt32($L.$L.mType)", argClassName, property.propertyName())
-                                .addStatement("(($L) $L.$L).serialize(writer)",
-                                        arrayList.get(0).getKey().getValue(),
-                                        argClassName, property.propertyName());
-                        if (arrayList.size() == 1) {
-                            builder.endControlFlow();
-                        } else {
-                            // Next
-                            for (int i = 1; i < arrayList.size(); i++) {
-                                builder.nextControlFlow("else if ($L.$L instanceof $T)", argClassName,
-                                        property.propertyName(),
-                                        ClassName.get(arrayList.get(i).getKey().getKey(), arrayList.get(i).getKey().getValue()))
-                                        .addStatement("writer.writeInt32($L.$L.mType)", argClassName, property.propertyName())
-                                        .addStatement("(($L) $L.$L).serialize(writer)", arrayList.get(i).getKey().getValue(),
-                                                argClassName, property.propertyName());
-                            }
-                            // End
-                            builder.endControlFlow(); // End if
-                        }
-                        builder.nextControlFlow("else")
-                                .addStatement("writer.writeBool(false)")
-                                .endControlFlow();
-                    }
-                    break;
-                case CONDITIONAL_OBJECT_ARRAY:
-                    if (property.conditionalProperties() != null && property.conditionalProperties().size() > 0) {
-                        ZarcelArrayList<Map.Entry<Map.Entry<String, String>, Integer>> arrayList = property.conditionalProperties();
-                        builder.beginControlFlow("if ($L.$L != null)", argClassName, property.propertyName())
-                                .addStatement("writer.writeBool(true)")
-                                .addStatement("int size$L = $L.$L.length", property.propertyName(), argClassName, property.propertyName())
-                                .addStatement("writer.writeInt32(size$L)", property.propertyName())
-                                .beginControlFlow("for (int i = 0; i < size$L; i++)", property.propertyName())
-                                // Begin if
-                                .beginControlFlow("if ($L.$L[i] instanceof $T)", argClassName, property.propertyName(),
-                                        ClassName.get(arrayList.get(0).getKey().getKey(), arrayList.get(0).getKey().getValue()))
-                                .addStatement("writer.writeInt32($L.$L[i].mType)", argClassName, property.propertyName())
-                                .addStatement("(($L) $L.$L[i]).serialize(writer)",
-                                        arrayList.get(0).getKey().getValue(),
-                                        argClassName, property.propertyName());
-                        if (arrayList.size() == 1) {
-                            builder.endControlFlow().endControlFlow();
-                        } else {
-                            // Next
-                            for (int i = 1; i < arrayList.size(); i++) {
-                                builder.nextControlFlow("else if ($L.$L[i] instanceof $T)", argClassName,
-                                        property.propertyName(),
-                                        ClassName.get(arrayList.get(i).getKey().getKey(), arrayList.get(i).getKey().getValue()))
-                                        .addStatement("writer.writeInt32($L.$L[i].mType)", argClassName, property.propertyName())
-                                        .addStatement("(($L) $L.$L[i]).serialize(writer)", arrayList.get(i).getKey().getValue(),
-                                                argClassName, property.propertyName());
-                            }
-                            // End
-                            builder.endControlFlow() // End if
-                                    .endControlFlow(); // End for
-                        }
+                                .addStatement("writer.writeBool(true)");
+
+                        builder.addStatement("$T tmp$$customAdapter = new $T()",
+                                ClassName.get(property.dataType().getKey(), property.dataType().getValue()),
+                                ClassName.get(property.dataType().getKey(), property.dataType().getValue()));
+                        builder.addStatement("tmp$$customAdapter.serialize($L.$L,writer)",
+                                argClassName, property.propertyName());
+
                         builder.nextControlFlow("else")
                                 .addStatement("writer.writeBool(false)")
                                 .endControlFlow();
@@ -277,13 +236,14 @@ class ZarcelGenerator {
                         break;
                     case OBJECT_ARRAY:
                         if (!property.objectNullable()) {
-                            builder.addStatement("int size$L = reader.readInt32()", property.propertyName())
+                            builder.addStatement("$L.$L = $T.", property.propertyName())
                                     .addStatement("$L.$L = new $T[size$L]", argClassName, property.propertyName(),
                                             ClassName.get(property.dataType().getKey(), property.dataType().getValue()),
                                             property.propertyName())
                                     .beginControlFlow("for (int i = 0; i < size$L; i++)", property.propertyName())
-                                    .addStatement("$L.$L[i] = $L.CREATOR.createFromSerialized(reader)",
-                                            argClassName, property.propertyName(), property.dataType().getValue())
+                                    .addStatement("$L.$L[i] = $T.CREATOR.createFromSerialized(reader)",
+                                            argClassName, property.propertyName(),
+                                            ClassName.get(property.dataType().getKey(), property.dataType().getValue()))
                                     .endControlFlow();
                         } else {
                             builder.beginControlFlow("if (reader.readBool())")
@@ -292,59 +252,31 @@ class ZarcelGenerator {
                                             ClassName.get(property.dataType().getKey(), property.dataType().getValue()),
                                             property.propertyName())
                                     .beginControlFlow("for (int i = 0; i < size$L; i++)", property.propertyName())
-                                    .addStatement("$L.$L[i] = $L.CREATOR.createFromSerialized(reader)",
-                                            argClassName, property.propertyName(), property.dataType().getValue())
+                                    .addStatement("$L.$L[i] = $T.CREATOR.createFromSerialized(reader)",
+                                            argClassName, property.propertyName(),
+                                            ClassName.get(property.dataType().getKey(), property.dataType().getValue()))
                                     .endControlFlow()
                                     .endControlFlow();
                         }
                         break;
-                    case CONDITIONAL_OBJECT:
-                        builder.beginControlFlow("if (reader.readBool())")
-                                .addStatement("int type$L = reader.readInt32()", property.propertyName())
-                                // FIRST
-                                .beginControlFlow("if (type$L == $L)", property.propertyName(), property.conditionalProperties().get(0).getValue())
-                                .addStatement("$L.$L = $L.CREATOR.createFromSerialized(reader)", argClassName,
-                                        property.propertyName(), property.conditionalProperties().get(0).getKey().getValue());
-                        if (data.properties().size() > 1) {
-                            // NEXT
-                            for (int iterator = 1; iterator < property.conditionalProperties().size(); iterator++) {
-                                builder.nextControlFlow("else if(type$L == $L)", property.propertyName(),
-                                        property.conditionalProperties().get(iterator).getValue())
-                                        .addStatement("$L.$L = $L.CREATOR.createFromSerialized(reader)", argClassName,
-                                                property.propertyName(), property.conditionalProperties().get(iterator).getKey().getValue());
-                            }
+                    case CUSTOM_ADAPTER:
+                        if (!property.objectNullable()) {
+                            builder.beginControlFlow("");
+                            builder.addStatement("$T tmp$$customAdapter = new $T()",
+                                    ClassName.get(property.dataType().getKey(), property.dataType().getValue()),
+                                    ClassName.get(property.dataType().getKey(), property.dataType().getValue()));
+                            builder.addStatement("$L.$L = tmp$$customAdapter.createFromSerialized(reader)",
+                                    argClassName, property.propertyName());
+                            builder.endControlFlow();
+                        } else {
+                            builder.beginControlFlow("if (reader.readBool())")
+                                    .addStatement("$T tmp$$customAdapter = new $T()",
+                                            ClassName.get(property.dataType().getKey(), property.dataType().getValue()),
+                                            ClassName.get(property.dataType().getKey(), property.dataType().getValue()));
+                            builder.addStatement("$L.$L = tmp$$customAdapter.createFromSerialized(reader)",
+                                    argClassName, property.propertyName());
+                            builder.endControlFlow();
                         }
-                        //------------------------//
-                        builder.endControlFlow()
-                                .endControlFlow();
-                        break;
-                    case CONDITIONAL_OBJECT_ARRAY:
-                        builder.beginControlFlow("if (reader.readBool())")
-                                .addStatement("int size$L = reader.readInt32()", property.propertyName())
-                                .addStatement("$L.$L = new $T[size$L]", argClassName, property.propertyName(),
-                                        ClassName.get(property.dataType().getKey(), property.dataType().getValue()),
-                                        property.propertyName())
-                                .beginControlFlow("for (int i = 0; i < size$L; i++)", property.propertyName())
-                                .addStatement("int type$L = reader.readInt32()", property.propertyName())
-
-                                // FIRST
-                                .beginControlFlow("if (type$L == $L)", property.propertyName(), property.conditionalProperties().get(0).getValue())
-                                .addStatement("$L.$L[i] = $L.CREATOR.createFromSerialized(reader)", argClassName,
-                                        property.propertyName(), property.conditionalProperties().get(0).getKey().getValue());
-                        if (data.properties().size() > 1) {
-                            // NEXT
-                            for (int iterator = 1; iterator < property.conditionalProperties().size(); iterator++) {
-                                builder.nextControlFlow("else if(type$L == $L)", property.propertyName(),
-                                        property.conditionalProperties().get(iterator).getValue())
-                                        .addStatement("$L.$L[i] = $L.CREATOR.createFromSerialized(reader)", argClassName,
-                                                property.propertyName(), property.conditionalProperties().get(iterator).getKey().getValue());
-                            }
-                        }
-                        //------------------------//
-                        builder.endControlFlow()
-                                .endControlFlow()
-                                .endControlFlow();
-                        break;
                 }
                 i++;
             } else {
@@ -358,7 +290,8 @@ class ZarcelGenerator {
         return builder.build();
     }
 
-    private static void writePrimitive(MethodSpec.Builder builder, String argClassName, String propertyName, String propertyDataType) {
+    private static void writePrimitive(MethodSpec.Builder builder, String argClassName, String propertyName, String
+            propertyDataType) {
         switch (propertyDataType) {
             case "int":
                 builder.addStatement("writer.writeInt32($L.$L)", argClassName, propertyName);
@@ -376,7 +309,8 @@ class ZarcelGenerator {
         }
     }
 
-    private static void readPrimitive(MethodSpec.Builder builder, String argClassName, String propertyName, String propertyDataType) {
+    private static void readPrimitive(MethodSpec.Builder builder, String argClassName, String propertyName, String
+            propertyDataType) {
         switch (propertyDataType) {
             case "int":
                 builder.addStatement("$L.$L = reader.readInt32()", argClassName, propertyName);

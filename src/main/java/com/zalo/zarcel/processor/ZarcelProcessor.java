@@ -1,28 +1,20 @@
 package com.zalo.zarcel.processor;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.zalo.zarcel.Exception.ZarcelException;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
+import java.io.IOException;
+import java.util.*;
 
 @SupportedAnnotationTypes("com.zalo.zarcel.processor.Zarcel")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class ZarcelProcessor extends AbstractProcessor{
+public class ZarcelProcessor extends AbstractProcessor {
 
     private Filer filer;
     private Messager messager;
@@ -46,9 +38,9 @@ public class ZarcelProcessor extends AbstractProcessor{
         for (TypeElement type : types) {
             ZarcelProcessorGenerator generator = new ZarcelProcessorGenerator();
             try {
-                generator.generate(type,elements, filer);
-            } catch (IOException e) {
-                e.printStackTrace();
+                generator.generate(type, elements, filer);
+            } catch (IOException | ZarcelException e) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.toString());
             }
         }
 

@@ -2,9 +2,9 @@ package com.zalo.zarcel;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 
 @AutoValue
 public abstract class ZarcelProperty {
@@ -25,7 +25,6 @@ public abstract class ZarcelProperty {
 
 
     /**
-     *
      * @return DataType chứa key là package, value là tên Class.
      */
     @Nonnull
@@ -42,10 +41,13 @@ public abstract class ZarcelProperty {
 
     public abstract boolean objectNullable();
 
+    public abstract boolean customAdapter();
+
     public static ZarcelProperty.Builder builder() {
-        return new AutoValue_ZarcelProperty.Builder()
+        return new com.zalo.zarcel.AutoValue_ZarcelProperty.Builder()
                 .setVersion(0)
-                .setObjectNullable(true);
+                .setObjectNullable(true)
+                .setCustomAdapter(false);
     }
 
     @AutoValue.Builder
@@ -69,10 +71,13 @@ public abstract class ZarcelProperty {
 
         public abstract Builder setObjectNullable(boolean objectNullable);
 
+        public abstract Builder setCustomAdapter(boolean isCustomAdapter);
+
         public abstract ZarcelProperty build();
+
     }
 
     public enum Type {
-        OBJECT, PRIMITIVE, CONDITIONAL_OBJECT, OBJECT_ARRAY, PRIMITIVE_ARRAY, CONDITIONAL_OBJECT_ARRAY
+        OBJECT, PRIMITIVE, OBJECT_ARRAY, PRIMITIVE_ARRAY, CUSTOM_ADAPTER
     }
 }

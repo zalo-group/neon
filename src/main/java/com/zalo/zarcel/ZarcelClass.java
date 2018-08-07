@@ -2,12 +2,11 @@ package com.zalo.zarcel;
 
 import com.google.auto.value.AutoValue;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Filer;
+import java.io.IOException;
+import java.util.Map;
 
 @AutoValue
 public abstract class ZarcelClass {
@@ -29,7 +28,7 @@ public abstract class ZarcelClass {
     public abstract int version();
 
     public static Builder builder() {
-        return new AutoValue_ZarcelClass.Builder()
+        return new com.zalo.zarcel.AutoValue_ZarcelClass.Builder()
                 .setVersion(0)
                 .setSerializeParent(false);
     }

@@ -1,0 +1,1 @@
+include ':app', ':zarcel-processor', ':libzalocore', ':libtest', ':libzalocore', ':libzalocore', ':zarcel-annotations', ':zarcel-utils'

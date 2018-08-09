@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.zing.zalo</groupId>
+  <artifactId>zarcel-annotations</artifactId>
+  <version>1.0.0</version>
+  <name>Zarcel Annotation</name>
+  <description>A library to download, layout and render UI data instantly</description>
+  <url>https://zalogit2.zing.vn/zinstant/zarceler</url>
+  <licenses>
+    <license>
+      <name></name>
+      <url></url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id></id>
+      <name></name>
+    </developer>
+  </developers>
+  <scm>
+    <connection>https://zalogit2.zing.vn/zinstant/zarceler.git</connection>
+    <developerConnection>https://zalogit2.zing.vn/zinstant/zarceler.git</developerConnection>
+    <url>https://zalogit2.zing.vn/zinstant/zarceler</url>
+  </scm>
+</project>

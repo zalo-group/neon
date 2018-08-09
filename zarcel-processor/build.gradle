@@ -1,0 +1,31 @@
+plugins {
+    id "net.ltgt.apt" version "0.18"
+    id "io.github.rockerhieu.versionberg" version "1.0.2"
+}
+
+apply plugin: 'java-library'
+
+versionberg {
+    major LIB_VERSION_MAJOR
+    minor LIB_VERSION_MINOR
+    nameTemplate LIB_VERSION_NAME_TEMPLATE
+    gitDir new File("${rootDir.parent}/.git")
+}
+
+dependencies {
+    implementation 'com.google.code.findbugs:jsr305:3.0.1'
+    annotationProcessor 'com.google.auto.value:auto-value:1.6.2'
+    compileOnly 'com.google.auto.value:auto-value-annotations:1.6.2'
+    implementation 'com.squareup:javapoet:1.11.1'
+
+    implementation project(':libzalocore')
+    implementation project(':zarcel-annotations')
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+compileJava.options.compilerArgs.add('-parameters')
+compileTestJava.options.compilerArgs.add('-parameters')
+ext.VERSION_NAME = versionberg.name
+
+apply from: '../gradle-mvn-push.gradle'

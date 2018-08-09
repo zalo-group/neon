@@ -13,7 +13,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Map;
 
-public abstract class AbstractZarcelAdapter<T> implements ZarcelAdapter<T> {
+public abstract class PolymorphismZarcelAdapter<T> implements ZarcelAdapter<T> {
 
     private ArrayList<Map.Entry<Integer, Class>> children;
 
@@ -23,7 +23,7 @@ public abstract class AbstractZarcelAdapter<T> implements ZarcelAdapter<T> {
 
     protected abstract void onRegisterChildClasses();
 
-    protected AbstractZarcelAdapter() {
+    protected PolymorphismZarcelAdapter() {
         children = new ArrayList<>();
         onRegisterChildClasses();
     }

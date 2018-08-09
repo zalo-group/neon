@@ -2,9 +2,9 @@ package com.zalo.zing.abstractAdapter;
 
 import com.zing.zalo.Exception.ZarcelDuplicateException;
 import com.zing.zalo.Exception.ZarcelNotFoundException;
-import com.zing.zalo.adapter.AbstractZarcelAdapter;
+import com.zing.zalo.adapter.PolymorphismZarcelAdapter;
 
-public class VehicleAdapter extends AbstractZarcelAdapter<ZarcelVehicle> {
+public class VehicleAdapter extends PolymorphismZarcelAdapter<ZarcelVehicle> {
 
     @Override
     protected void onRegisterChildClasses() {//onRegisterChildClasses

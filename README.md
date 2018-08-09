@@ -67,6 +67,14 @@ public class Example implements Serializable {
 
 Ngoài kiểu Object bất kỳ ở trên, các kiểu còn lại đều có thể khai báo theo kiểu mảng [].
 
+### Modifiers
+
+Không được sử dụng private cho các thuộc tính.
+
+Có thể sử dụng từ khóa transient  để bỏ qua việc serialization.
+
+Có hỗ trợ inner static class.
+
 ## Quản lý version
 
 Khi thêm một thuộc tính vào class, chúng ta cần đảm bảo rằng những dữ liệu từ version cũ vẫn có thể được revert. Zarcel hỗ trợ quản lý version để đảm bảo có thể sử dụng dữ liệu ở các version cũ hơn.

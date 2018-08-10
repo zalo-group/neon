@@ -1,0 +1,41 @@
+def props = new Properties()
+def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { props.load(it) }
+    def releaseRepositoryUrl = props.getProperty("RELEASE_REPOSITORY_URL")
+    def snapshotRepositoryUrl = props.getProperty("SNAPSHOT_REPOSITORY_URL")
+    if (releaseRepositoryUrl != null && !releaseRepositoryUrl.isEmpty()) {
+        ext.RELEASE_REPOSITORY_URL = releaseRepositoryUrl
+    }
+    if (snapshotRepositoryUrl != null && !snapshotRepositoryUrl.isEmpty()) {
+        ext.SNAPSHOT_REPOSITORY_URL = snapshotRepositoryUrl
+    }
+
+    String nexusUsername, nexusPassword
+    // read from local.properties
+    if (props.containsKey("NEXUS_REPOSITORY_USERNAME") && props.containsKey("NEXUS_REPOSITORY_PASSWORD")) {
+        nexusUsername = props.getProperty("NEXUS_REPOSITORY_USERNAME")
+        nexusPassword = props.getProperty("NEXUS_REPOSITORY_PASSWORD")
+    } else {
+        println "Missing account credentials!"
+        // or ask if it has not been defined yet
+        ant.input(message: 'Enter your username:', addproperty: 'nexusUsername')
+        nexusUsername = ant.properties.nexusUsername
+        ant.input(message: 'Enter your password:', addproperty: 'nexusPassword') {
+            handler(type: 'secure', classname: 'org.apache.tools.ant.input.SecureInputHandler')
+        }
+        nexusPassword = ant.properties.nexusPassword
+        // and save it to local.properties
+        def localProperties = new File("local.properties")
+        String body = "\nNEXUS_REPOSITORY_USERNAME=$nexusUsername\n"
+        body += "NEXUS_REPOSITORY_PASSWORD=$nexusPassword\n"
+        localProperties << body
+    }
+
+    if (nexusUsername != null && !nexusUsername.isEmpty()) {
+        ext.NEXUS_REPOSITORY_USERNAME = nexusUsername
+    }
+    if (nexusPassword != null && !nexusPassword.isEmpty()) {
+        ext.NEXUS_REPOSITORY_PASSWORD = nexusPassword
+    }
+}

@@ -66,8 +66,10 @@ class ZarcelGenerator {
             );
         }
 
-        if (data.properties().get(data.properties().size() - 1).version() > data.version()) {
-            throw new IllegalArgumentException("Zarcel.Property has version larger than class version " + data.name());
+        if (hasProperty) {
+            if (data.properties().get(data.properties().size() - 1).version() > data.version()) {
+                throw new IllegalArgumentException("Zarcel.Property has version larger than class version " + data.name());
+            }
         }
 
         if (hasProperty) {

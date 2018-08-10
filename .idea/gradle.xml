@@ -8,14 +8,14 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/libtest" />
-            <option value="$PROJECT_DIR$/libzalocore" />
             <option value="$PROJECT_DIR$/zarcel-annotations" />
+            <option value="$PROJECT_DIR$/zarcel-core" />
             <option value="$PROJECT_DIR$/zarcel-processor" />
             <option value="$PROJECT_DIR$/zarcel-utils" />
           </set>
         </option>
+        <option name="useAutoImport" value="true" />
       </GradleProjectSettings>
     </option>
   </component>

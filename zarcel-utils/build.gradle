@@ -15,7 +15,7 @@ versionberg {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':libzalocore')
+    implementation project(':zarcel-core')
     implementation project(':zarcel-annotations')
     annotationProcessor project(':zarcel-processor')
 }

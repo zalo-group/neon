@@ -1,6 +1,7 @@
 plugins {
     id "io.github.rockerhieu.versionberg" version "1.0.2"
 }
+
 apply plugin: 'java-library'
 
 versionberg {
@@ -12,13 +13,10 @@ versionberg {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':zarcel-core')
 }
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
-compileJava.options.compilerArgs.add('-parameters')
-compileTestJava.options.compilerArgs.add('-parameters')
 ext.VERSION_NAME = versionberg.name
 
 apply from: '../gradle-mvn-push.gradle'

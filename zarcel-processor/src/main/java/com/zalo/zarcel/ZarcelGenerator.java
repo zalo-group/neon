@@ -17,10 +17,10 @@ class ZarcelGenerator {
 
     private static final String ZARCEL_SUFFIX = "$Zarcel";
 
-    private static String argClass, argPackage, argClassName;
-    private static boolean hasProperty = true;
+    private String argClass, argPackage, argClassName;
+    private boolean hasProperty = true;
 
-    private static void init(@Nonnull ZarcelClass data) {
+    private void init(@Nonnull ZarcelClass data) {
         argClass = data.name().trim();
         argClassName = argClass.toLowerCase();
         if (argClass.equals(argClassName)) {
@@ -36,7 +36,7 @@ class ZarcelGenerator {
             Collections.sort(data.properties(), (o1, o2) -> o1.version() - o2.version());
     }
 
-    static void generateFile(@Nonnull ZarcelClass data, Filer filer) throws IOException {
+    public void generateFile(@Nonnull ZarcelClass data, Filer filer) throws IOException {
         init(data);
         MethodSpec serialize = generateSerializeMethod(data);
         MethodSpec deserialize = generateDeserializeMethod(data);
@@ -50,7 +50,7 @@ class ZarcelGenerator {
         javaFile.writeTo(filer);
     }
 
-    private static MethodSpec generateSerializeMethod(@Nonnull ZarcelClass data) {
+    private MethodSpec generateSerializeMethod(@Nonnull ZarcelClass data) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("serialize")
                 .addModifiers(STATIC)
                 .addParameter(ClassName.get(argPackage, argClass), argClassName)
@@ -174,7 +174,7 @@ class ZarcelGenerator {
         return builder.build();
     }
 
-    private static MethodSpec generateDeserializeMethod(@Nonnull ZarcelClass data) {
+    private MethodSpec generateDeserializeMethod(@Nonnull ZarcelClass data) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("createFromSerialized")
                 .addModifiers(STATIC)
@@ -301,7 +301,7 @@ class ZarcelGenerator {
         return builder.build();
     }
 
-    private static void writePrimitive(MethodSpec.Builder builder, String argClassName, String propertyName, String
+    private void writePrimitive(MethodSpec.Builder builder, String argClassName, String propertyName, String
             propertyDataType) {
         switch (propertyDataType) {
             case "int":
@@ -316,14 +316,14 @@ class ZarcelGenerator {
                 break;
             case "long":
                 builder.addStatement("writer.writeInt64($L.$L)", argClassName, propertyName);
-
+                break;
             case "String":
                 builder.addStatement("writer.writeString($L.$L)", argClassName, propertyName);
                 break;
         }
     }
 
-    private static void readPrimitive(MethodSpec.Builder builder, String argClassName, String propertyName, String
+    private void readPrimitive(MethodSpec.Builder builder, String argClassName, String propertyName, String
             propertyDataType) {
         switch (propertyDataType) {
             case "int":

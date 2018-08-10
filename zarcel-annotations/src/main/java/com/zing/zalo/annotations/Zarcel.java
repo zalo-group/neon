@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface Zarcel {
     int version() default 0;
 
-    boolean serializedParent() default true;
+    boolean inheritanceSupported() default true;
 
     @Target(ElementType.FIELD)
     @interface Property {

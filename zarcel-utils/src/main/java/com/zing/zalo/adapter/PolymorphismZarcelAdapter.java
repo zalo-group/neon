@@ -3,6 +3,7 @@ package com.zing.zalo.adapter;
 import com.zing.zalo.Exception.ZarcelDuplicateException;
 import com.zing.zalo.Exception.ZarcelNotFoundException;
 import com.zing.zalo.Exception.ZarcelRuntimeException;
+import com.zing.zalo.annotations.NonNull;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
@@ -76,7 +77,7 @@ public abstract class PolymorphismZarcelAdapter<T> implements ZarcelAdapter<T> {
     }
 
     @Override
-    public void serialize(T object, SerializedOutput writer) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void serialize(@NonNull T object, SerializedOutput writer) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method;
         for (int i = 0; i < children.size(); i++) {
             if (children.get(i).getValue().isInstance(object)) {

@@ -17,6 +17,7 @@ public class Human implements Serializable {
     public Date birthdate;
     public Human[] children;
     public transient Human father;
+    private int __hidden__;
 
     @Override
     public void serialize(SerializedOutput output) {

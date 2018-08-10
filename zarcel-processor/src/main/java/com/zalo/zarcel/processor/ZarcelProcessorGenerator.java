@@ -72,8 +72,8 @@ class ZarcelProcessorGenerator {
             if (superClass.equals("java.lang.Object") || isParentAbstract) {
                 classBuilder.setSerializeParent(false);
             } else {
-                classBuilder.setSerializeParent(annotation.serializedParent());
-                if (annotation.serializedParent()) {
+                classBuilder.setSerializeParent(annotation.inheritanceSupported());
+                if (annotation.inheritanceSupported()) {
                     Element superClassElement = elements.getTypeElement(superClass);
                     Map.Entry<String, String> parentClass =
                             new AbstractMap.SimpleEntry<>(

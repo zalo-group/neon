@@ -76,6 +76,7 @@ public abstract class ZarcelClass {
     }
 
     public void generateFile(Filer filer) throws IOException {
-        ZarcelGenerator.generateFile(this, filer);
+        ZarcelGenerator generator = new ZarcelGenerator();
+        generator.generateFile(this, filer);
     }
 }

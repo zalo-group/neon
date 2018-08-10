@@ -88,11 +88,12 @@ afterEvaluate { project ->
                 pom.whenConfigured {
                     p -> p.dependencies = p.dependencies.each {
                         if (it.artifactId == "zarcel-annotations") {
-                            it.groupId = "com.zing.zalo"
+                            it.groupId = GROUP
+                            it.version = VERSION_NAME
+                        } else if (it.artifactId == "zarcel-core") {
+                            it.groupId = GROUP
                             it.version = VERSION_NAME
                         }
-                    }.findAll {
-                        dep -> dep.artifactId != "libzalocore"
                     }
                 }
             }

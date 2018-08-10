@@ -1,8 +1,8 @@
 package com.zing.zalo.adapter;
 
-import com.zing.zalo.Exception.ZarcelDuplicateException;
-import com.zing.zalo.Exception.ZarcelNotFoundException;
-import com.zing.zalo.Exception.ZarcelRuntimeException;
+import com.zing.zalo.e.ZarcelDuplicateException;
+import com.zing.zalo.e.ZarcelNotFoundException;
+import com.zing.zalo.e.ZarcelRuntimeException;
 import com.zing.zalo.annotations.NonNull;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;

@@ -1,6 +1,6 @@
 package com.zalo.zarcel.processor;
 
-import com.zing.zalo.Exception.ZarcelException;
+import com.zing.zalo.e.ZarcelException;
 import com.zing.zalo.annotations.Zarcel;
 
 import javax.annotation.processing.*;

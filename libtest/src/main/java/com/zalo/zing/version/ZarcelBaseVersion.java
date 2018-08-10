@@ -26,14 +26,9 @@ public class ZarcelBaseVersion implements Serializable {
         @Nullable
         @Override
         public ZarcelBaseVersion createFromSerialized(SerializedInput input) {
-            try {
-                ZarcelBaseVersion result = new ZarcelBaseVersion();
-                ZarcelBaseVersion$Zarcel.createFromSerialized(result, input);
-                return result;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
+            ZarcelBaseVersion result = new ZarcelBaseVersion();
+            ZarcelBaseVersion$Zarcel.createFromSerialized(result, input);
+            return result;
         }
     };
 }

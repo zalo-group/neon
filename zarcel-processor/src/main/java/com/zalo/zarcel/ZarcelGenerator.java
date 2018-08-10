@@ -65,6 +65,11 @@ class ZarcelGenerator {
                     argClassName
             );
         }
+
+        if (data.properties().get(data.properties().size() - 1).version() > data.version()) {
+            throw new IllegalArgumentException("Zarcel.Property has version larger than class version " + data.name());
+        }
+
         if (hasProperty) {
             int propertyVersion = data.properties().get(0).version();
             builder.addCode("//========================== Version $L ==========================//\n", propertyVersion);
@@ -185,7 +190,7 @@ class ZarcelGenerator {
         // Check version
         builder.addStatement("int version = reader.readInt32()");
         builder.beginControlFlow("if (version>$L)", data.version())
-                .addStatement("return")
+                .addStatement("throw new IllegalArgumentException(\"$L is outdated. Update $L to deserialize newest binary data.\")", data.name(), data.name())
                 .endControlFlow();
         // Check base
         if (data.serializeParent()) {

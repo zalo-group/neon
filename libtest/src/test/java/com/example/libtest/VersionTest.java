@@ -1,5 +1,6 @@
 package com.example.libtest;
 
+import com.zalo.zing.abstractAdapter.ZarcelBike;
 import com.zalo.zing.version.ZarcelBaseVersion;
 import com.zalo.zing.version.ZarcelNewVersion;
 import com.zing.zalo.data.serialization.SerializedByteArrayInput;
@@ -19,5 +20,16 @@ public class VersionTest extends BaseTest {
         ZarcelNewVersion result =
                 ZarcelNewVersion.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
         assertZarcelVersion(origin, result);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void newVersion() {
+        ZarcelNewVersion newVersion = new ZarcelNewVersion();
+        newVersion.mCats = 2;
+        newVersion.mRadius = 2.2f;
+        SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
+        newVersion.serialize(writer);
+        ZarcelBaseVersion result =
+                ZarcelBaseVersion.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
     }
 }

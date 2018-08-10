@@ -1,7 +1,7 @@
 package com.zalo.zing.abstractAdapter;
 
-import com.zing.zalo.e.ZarcelDuplicateException;
-import com.zing.zalo.e.ZarcelNotFoundException;
+import com.zing.zalo.exception.ZarcelDuplicateException;
+import com.zing.zalo.exception.ZarcelNotFoundException;
 import com.zing.zalo.adapter.PolymorphismZarcelAdapter;
 
 public class VehicleAdapter extends PolymorphismZarcelAdapter<ZarcelVehicle> {

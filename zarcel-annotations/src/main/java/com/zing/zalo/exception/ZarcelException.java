@@ -1,4 +1,4 @@
-package com.zing.zalo.e;
+package com.zing.zalo.exception;
 
 public class ZarcelException extends Exception {
     public ZarcelException(String message) {

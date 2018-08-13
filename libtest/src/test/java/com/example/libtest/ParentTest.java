@@ -1,21 +1,21 @@
 package com.example.libtest;
 
 import com.zalo.zing.extendClass.ZarcelChild;
-import com.zalo.zing.extendClass.ZarcelRoot;
+import com.zalo.zing.extendClass.ZarcelParent;
 import com.zing.zalo.data.serialization.SerializedByteArrayInput;
 import com.zing.zalo.data.serialization.SerializedByteArrayOutput;
 import org.junit.Test;
 
-public class RootTest extends BaseTest {
+public class ParentTest extends BaseTest {
     @Test
-    public void root() {
-        ZarcelRoot origin = new ZarcelRoot();
+    public void parent() {
+        ZarcelParent origin = new ZarcelParent();
         setZarcelRoot(origin);
 
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         origin.serialize(writer);
-        ZarcelRoot result =
-                ZarcelRoot.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+        ZarcelParent result =
+                ZarcelParent.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
         assertZarcelRoot(origin, result);
     }
 

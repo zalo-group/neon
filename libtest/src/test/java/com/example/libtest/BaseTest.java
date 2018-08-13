@@ -5,7 +5,7 @@ import com.zalo.zing.abstractAdapter.ZarcelCar;
 import com.zalo.zing.abstractAdapter.ZarcelVehicle;
 import com.zalo.zing.customadapter.*;
 import com.zalo.zing.extendClass.ZarcelChild;
-import com.zalo.zing.extendClass.ZarcelRoot;
+import com.zalo.zing.extendClass.ZarcelParent;
 import com.zalo.zing.nullable.ZarcelNullable;
 import com.zalo.zing.object.ZarcelObject;
 import com.zalo.zing.object.ZarcelObjectOne;
@@ -262,7 +262,7 @@ public class BaseTest {
         }
     }
 
-    void setZarcelRoot(ZarcelRoot root) {
+    void setZarcelRoot(ZarcelParent root) {
         root.x = getInt();
         root.y = getInt();
         root.z = getInt();
@@ -287,7 +287,7 @@ public class BaseTest {
         }
     }
 
-    void assertZarcelRoot(ZarcelRoot origin, ZarcelRoot result) {
+    void assertZarcelRoot(ZarcelParent origin, ZarcelParent result) {
         assertEquals(origin.x, result.x);
         assertEquals(origin.y, result.y);
         assertEquals(origin.z, result.z);

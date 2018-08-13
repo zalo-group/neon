@@ -6,11 +6,13 @@ import com.zalo.zarcel.ZarcelClass;
 import com.zalo.zarcel.ZarcelProperty;
 
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.List;
@@ -27,20 +29,22 @@ class ZarcelProcessorGenerator {
 
     private TypeElement type;
     private Elements elements;
+    private Messager messager;
     private String packageName;
     private String className;
     private boolean isCustomProperty = false;
     private ZarcelClass.Builder classBuilder = ZarcelClass.builder();
 
-    void init(TypeElement type, Elements elements) {
+    void init(TypeElement type, Elements elements, Messager messager) {
         this.type = type;
         this.elements = elements;
         this.packageName = getPackage(type);
         this.className = getClassName(type, packageName);
+        this.messager = messager;
     }
 
-    void generate(TypeElement type, Elements elements, Filer filer) throws IOException, ZarcelException {
-        init(type, elements);
+    void generate(TypeElement type, Elements elements, Filer filer, Messager messager) throws IOException, ZarcelException {
+        init(type, elements, messager);
         parseClassAnnotation();
         parseClass();
         parseProperties();
@@ -70,9 +74,9 @@ class ZarcelProcessorGenerator {
                 }
             }
             if (superClass.equals("java.lang.Object") || isParentAbstract) {
-                classBuilder.setSerializeParent(false);
+                classBuilder.setInheritanceSupported(false);
             } else {
-                classBuilder.setSerializeParent(annotation.inheritanceSupported());
+                classBuilder.setInheritanceSupported(annotation.inheritanceSupported());
                 if (annotation.inheritanceSupported()) {
                     Element superClassElement = elements.getTypeElement(superClass);
                     Map.Entry<String, String> parentClass =
@@ -102,9 +106,12 @@ class ZarcelProcessorGenerator {
 
         for (Modifier modifier : property.getModifiers()) {
             if (modifier.toString().equals("static") ||
-                    modifier.toString().equals("private") ||
                     modifier.toString().equals("transient"))
                 return;
+            if (modifier.toString().equals("private")) {
+                showPrivateWarning(property);
+                return;
+            }
         }
 
         if (!property.getEnclosingElement().toString().equals(type.toString())) {
@@ -118,6 +125,16 @@ class ZarcelProcessorGenerator {
         } else if (property.asType().getKind() == TypeKind.ARRAY) {
             parseArrayProperty(property);
         }
+    }
+
+    private void showPrivateWarning(Element property) {
+        List<? extends AnnotationMirror> annotationMirrors = property.getAnnotationMirrors();
+        for (AnnotationMirror annotationMirror : annotationMirrors) {
+            String simpleName = annotationMirror.getAnnotationType().asElement().getSimpleName().toString();
+            if (simpleName.equals("Ignore"))
+                return;
+        }
+        messager.printMessage(Diagnostic.Kind.WARNING, "private property: " + property.getSimpleName() + " in " + property.getEnclosingElement().toString() + " is ignored.");
     }
 
     private void parsePrimitiveProperty(Element property) throws ZarcelException {
@@ -251,7 +268,7 @@ class ZarcelProcessorGenerator {
         List<? extends AnnotationMirror> annotationMirrors = property.getAnnotationMirrors();
         for (AnnotationMirror annotationMirror : annotationMirrors) {
             String simpleName = annotationMirror.getAnnotationType().asElement().getSimpleName().toString();
-            if (simpleName.equals("NonNull")) {
+            if (simpleName.equals("NonNull") || simpleName.equals("NotNull")) {
                 builder.setObjectNullable(false);
             }
         }

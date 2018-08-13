@@ -9,10 +9,8 @@ public class VehicleAdapter extends PolymorphismZarcelAdapter<ZarcelVehicle> {
     @Override
     protected void onRegisterChildClasses() {//onRegisterChildClasses
         try {
-            register(ZarcelVehicle.CAR, ZarcelCar.class, RegisterType.ADD);
-            register(ZarcelVehicle.BIKE, ZarcelBike.class, RegisterType.ADD);
-        } catch (ZarcelNotFoundException e) {
-            e.printStackTrace();
+            registryAdd(ZarcelVehicle.CAR, ZarcelCar.class);
+            registryAdd(ZarcelVehicle.BIKE, ZarcelBike.class);
         } catch (ZarcelDuplicateException e) {
             e.printStackTrace();
         }

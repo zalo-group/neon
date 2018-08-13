@@ -18,7 +18,6 @@ public @interface Zarcel {
 
         int arraySize() default 0;
     }
-
     @Target(ElementType.FIELD)
     @interface Custom {
         Class adapter();

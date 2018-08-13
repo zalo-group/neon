@@ -37,7 +37,7 @@ public class ZarcelProcessor extends AbstractProcessor {
         for (TypeElement type : types) {
             ZarcelProcessorGenerator generator = new ZarcelProcessorGenerator();
             try {
-                generator.generate(type, elements, filer);
+                generator.generate(type, elements, filer, messager);
             } catch (IOException | ZarcelException e) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.toString());
             }

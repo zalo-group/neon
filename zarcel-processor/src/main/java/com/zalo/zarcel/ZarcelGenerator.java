@@ -59,7 +59,7 @@ class ZarcelGenerator {
 
         builder.addCode("//------------ $L version------------//\n", data.name());
         builder.addStatement("writer.writeInt32($L)", data.version());
-        if (data.serializeParent() && data.parentClass() != null) {
+        if (data.inheritanceSupported() && data.parentClass() != null) {
             builder.addStatement("$T.serialize($L,writer)",
                     ClassName.get(data.parentClass().getKey(), data.parentClass().getValue() + ZARCEL_SUFFIX),
                     argClassName
@@ -195,7 +195,7 @@ class ZarcelGenerator {
                 .addStatement("throw new IllegalArgumentException(\"$L is outdated. Update $L to deserialize newest binary data.\")", data.name(), data.name())
                 .endControlFlow();
         // Check base
-        if (data.serializeParent()) {
+        if (data.inheritanceSupported()) {
             builder.addStatement("$T.createFromSerialized($L,reader)",
                     ClassName.get(data.parentClass().getKey(), data.parentClass().getValue() + ZARCEL_SUFFIX),
                     argClassName

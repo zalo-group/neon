@@ -18,7 +18,7 @@ public abstract class ZarcelClass {
     @Nonnull
     public abstract String thisPackage();
 
-    public abstract boolean serializeParent();
+    public abstract boolean inheritanceSupported();
 
     @Nullable
     public abstract Map.Entry<String, String> parentClass();
@@ -36,7 +36,7 @@ public abstract class ZarcelClass {
     public static Builder builder() {
         return new com.zalo.zarcel.AutoValue_ZarcelClass.Builder()
                 .setVersion(0)
-                .setSerializeParent(false);
+                .setInheritanceSupported(false);
     }
 
     @AutoValue.Builder
@@ -47,7 +47,7 @@ public abstract class ZarcelClass {
 
         public abstract Builder setVersion(int version);
 
-        public abstract Builder setSerializeParent(boolean serializeParent);
+        public abstract Builder setInheritanceSupported(boolean serializeParent);
 
         public abstract Builder setParentClass(Map.Entry<String, String> parentClass);
 

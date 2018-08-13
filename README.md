@@ -4,10 +4,14 @@ Zarcel là java preprocessor library. Zarcel sử dụng annotation để xử l
 
 ## Usage
 
-<pre> 
+<pre>
 implementation 'com.zing.zalo:zarcel-annotations:0.1.0'
 annotationProcessor 'com.zing.zalo:zarcel-processor:0.1.0'
 </pre>
+
+hoặc
+
+Import from [source code](https://zalogit2.zing.vn/zinstant/zarceler/tags)
 
 ## Basic example
 Một class sử dụng Zarcel luôn cần implements Serializable.
@@ -98,14 +102,16 @@ public class Example implements Serializable {
 
 Như ví dụ trên, để khai báo version của class, ta sử dụng @Zarcel(version=1), để biết một property xuất hiện từ version nào, ta sử dụng @Zarcel.Property(sinceVersion=1).<br>
 Mặc định version = 0, sinceVersion=0. Ngoài ra, sinceVersion không được lớn hơn version.<br>
-<b>Quan trọng:</b> Việc quản lý version chỉ áp dụng khi thêm thuộc tính vào class. Việc xóa hoặc sửa tên thuộc tính có thể dẫn đến những dữ liệu của version cũ hoạt động sai.
+<b>Quan trọng:</b> Việc quản lý version chỉ áp dụng khi thêm thuộc tính vào class. Việc xóa tên thuộc tính có thể dẫn đến những dữ liệu của version cũ hoạt động sai.
+
+<b>Note: </b>Sửa tên thuộc tính không ảnh hưởng đến quá trình serialize.
 
 ## Serialize Parent
 
-Zarcel hỗ trợ việc serialize và deserialize một class, mà class được dc extends từ parent. Khi đó, Zarcel sẽ hỗ trợ serialize parent, và parent cũng phải là Zarcel Object. Có thể thiết lập như sau: 
+Zarcel hỗ trợ việc serialize và deserialize một class, mà class được dc extends từ parent. Khi đó, Zarcel sẽ hỗ trợ serialize từ parent, và parent cũng phải là Zarcel Object. Có thể thiết lập như sau: 
 ```java
-@Zarcel(serializedParent = true)
-public class ZarcelChild extends ZarcelRoot implements Serializable {
+@Zarcel(inheritanceSupported = true)
+public class ZarcelChild extends ZarcelParent implements Serializable {
     public String daddyName;
     
     //...
@@ -113,11 +119,11 @@ public class ZarcelChild extends ZarcelRoot implements Serializable {
 }    
 ```
 
-Mặc định serializedParent là true.
+Mặc định inheritanceSupported là true.
 
 ## Sử dụng các annotations khác.
 
-Sử dụng @Nonnull cho một thuộc tính không được phép null. Khi đó zarcel sẽ cho phép đọc ghi dữ liệu mà không cần kiểm tra.
+Sử dụng @NonNull hoặc @NotNull cho một thuộc tính không được phép null. Khi đó zarcel sẽ cho phép đọc ghi dữ liệu mà không cần kiểm tra.
 
 Sử dụng @Deprecated thông báo về một thuộc tính không nên sử dụng nữa. Tuy nhiên, Zarcel vẫn sẽ đọc và ghi thuộc tính này.
 

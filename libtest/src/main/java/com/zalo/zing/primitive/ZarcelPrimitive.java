@@ -1,6 +1,7 @@
 package com.zalo.zing.primitive;
 
 import android.support.annotation.Nullable;
+import com.zing.zalo.annotations.Ignore;
 import com.zing.zalo.annotations.Zarcel;
 import com.zing.zalo.data.serialization.Serializable;
 import com.zing.zalo.data.serialization.SerializedInput;
@@ -21,6 +22,8 @@ public class ZarcelPrimitive implements Serializable {
 
     public boolean mWrong;
 
+    @Ignore
+    private boolean _no_warning;
     @Override
     public void serialize(SerializedOutput serializedOutput) {
         ZarcelPrimitive$Zarcel.serialize(this, serializedOutput);

@@ -7,7 +7,7 @@ import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
 @Zarcel
-public class ZarcelChild extends ZarcelRoot implements Serializable {
+public class ZarcelChild extends ZarcelParent implements Serializable {
     public String daddyName;
 
     @Override

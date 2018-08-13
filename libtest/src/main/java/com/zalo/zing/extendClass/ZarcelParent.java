@@ -9,7 +9,7 @@ import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
 @Zarcel(version = 3)
-public class ZarcelRoot implements Serializable {
+public class ZarcelParent implements Serializable {
 
     @Zarcel.Property(sinceVersion = 1)
     public int x;
@@ -26,16 +26,16 @@ public class ZarcelRoot implements Serializable {
 
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelRoot$Zarcel.serialize(this, serializedOutput);
+        ZarcelParent$Zarcel.serialize(this, serializedOutput);
     }
 
-    public static Serializable.Creator<ZarcelRoot> CREATOR = new Serializable.Creator<ZarcelRoot>() {
+    public static Serializable.Creator<ZarcelParent> CREATOR = new Serializable.Creator<ZarcelParent>() {
         @Nullable
         @Override
-        public ZarcelRoot createFromSerialized(SerializedInput input) {
+        public ZarcelParent createFromSerialized(SerializedInput input) {
             try {
-                ZarcelRoot result = new ZarcelRoot();
-                ZarcelRoot$Zarcel.createFromSerialized(result, input);
+                ZarcelParent result = new ZarcelParent();
+                ZarcelParent$Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

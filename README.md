@@ -171,8 +171,6 @@ Một adapter <b>bắt buộc</b> implements <i>ZarcelAdapter</i>. Tham số ch�
   }
   
   ```
-  
-Ngoài ra, object chỉ được truyền vào adapter xử lý nếu nó khác null.
 
 #### Bước 2: Sử dụng Adapter
 

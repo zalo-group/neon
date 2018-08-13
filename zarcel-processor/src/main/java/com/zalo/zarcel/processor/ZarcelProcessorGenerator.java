@@ -104,14 +104,17 @@ class ZarcelProcessorGenerator {
     private void parseProperty(Element property) throws ZarcelException {
         if (property.getKind() != ElementKind.FIELD) return;
 
+        boolean isPrivate = false;
         for (Modifier modifier : property.getModifiers()) {
-            if (modifier.toString().equals("static") ||
-                    modifier.toString().equals("transient"))
+            if (modifier.toString().equals("static") || modifier.toString().equals("transient"))
                 return;
             if (modifier.toString().equals("private")) {
-                showPrivateWarning(property);
-                return;
+                isPrivate = true;
             }
+        }
+        if (isPrivate) {
+            showPrivateWarning(property);
+            return;
         }
 
         if (!property.getEnclosingElement().toString().equals(type.toString())) {

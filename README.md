@@ -137,7 +137,7 @@ Một adapter <b>bắt buộc</b> implements <i>ZarcelAdapter</i>. Tham số ch�
  ```java
  public class AnimalAdapter implements ZarcelAdapter<ZarcelAnimal> {
      @Override
-     public void serialize(ZarcelAnimal object, SerializedOutput writer) {
+     public void serialize(@NonNull ZarcelAnimal object, SerializedOutput writer) {
          // Do something
          /*
             Example: 
@@ -160,7 +160,7 @@ Một adapter <b>bắt buộc</b> implements <i>ZarcelAdapter</i>. Tham số ch�
   
   public class CarAdapter implements ZarcelAdapter<Car[]> {
       @Override
-      public void serialize(Car[] object, SerializedOutput writer) {
+      public void serialize(@NonNull Car[] object, SerializedOutput writer) {
           // Do something
       }
   
@@ -192,8 +192,6 @@ Ngoài ra, object chỉ được truyền vào adapter xử lý nếu nó khác 
  }
  
 ```
-
-Như ở trên, nếu <b>cat</b> không null, Zarcel sẽ gọi phương thức serialize và createFromSerialized từ <b>AnimalAdapter</b> 
 
 ## Một số adapter có sẵn
 
@@ -235,10 +233,8 @@ public class VehicleAdapter extends PolymorphismZarcelAdapter<ZarcelVehicle> {
     @Override
     protected void onRegisterChildClasses() {
         try {
-            register(ZarcelVehicle.CAR, ZarcelCar.class, RegisterType.ADD);
-            register(ZarcelVehicle.BIKE, ZarcelBike.class, RegisterType.ADD);
-        } catch (ZarcelNotFoundException e) {
-            e.printStackTrace();
+            registryAdd(ZarcelVehicle.CAR, ZarcelCar.class);
+            registryAdd(ZarcelVehicle.BIKE, ZarcelBike.class);
         } catch (ZarcelDuplicateException e) {
             e.printStackTrace();
         }

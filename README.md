@@ -248,17 +248,14 @@ public class VehicleAdapter extends PolymorphismZarcelAdapter<ZarcelVehicle> {
 ```
 
 Tại phương thức onRegisterChildClasses, đăng ký toàn bộ subclass kế thừa từ parent class. <br>
-Sử dụng phương thức register(int, Class, RegisterType) để đăng ký class.<br>
-Trong đó: <br>
-<b>int</b> -\> type của lớp. Có thể tự định nghĩa tương tự ví dụ ở trên. Mỗi lớp là một type riêng biệt.<br>
-<b>Class</b> -\> Đây là một class con của parent class.
-<br><b>RegisterType</b>: 
+Các phương thức được hỗ trợ: 
 
-|RegisterType | Ghi Chú          | 
-|------------ | ---------------- |
-|ADD          | Thêm một class mới | 
-|UPDATE_TYPE  | Cập nhật type của một class | 
-|UPDATE_CLASS | Cập nhật class của một type | 
+|Method                           | Ghi Chú          | 
+|-------------------------------- | ----------------   |
+|registryAdd(int type, Class)     | Thêm một class mới | 
+|registryUpdate(int type, Class)  | Cập nhật class hiện tại | 
+|registryRemove(int type)         | Xóa class khỏi danh sách |
+|isRegistered(int type)           | Kiểm tra một class đã có trong danh sách chưa thông qua type| 
 
 #### Bước hai: Sử dụng adapter
 

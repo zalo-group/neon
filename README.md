@@ -5,8 +5,8 @@ Zarcel là java preprocessor library. Zarcel sử dụng annotation để xử l
 ## Usage
 
 <pre>
-implementation 'com.zing.zalo:zarcel-annotations:0.1.0'
-annotationProcessor 'com.zing.zalo:zarcel-processor:0.1.0'
+implementation 'com.zing.zalo:zarcel-annotations:0.2.0'
+annotationProcessor 'com.zing.zalo:zarcel-processor:0.2.0'
 </pre>
 
 hoặc
@@ -198,7 +198,7 @@ Như ở trên, nếu <b>cat</b> không null, Zarcel sẽ gọi phương thức 
 ## Một số adapter có sẵn
 
 <pre> 
-implementation 'com.zing.zalo:zarcel-utils:0.1.0'
+implementation 'com.zing.zalo:zarcel-utils:0.2.0'
 </pre>
 
 ### ZarcelDateAdapter 

@@ -2,6 +2,7 @@ package com.zalo.zing.customadapter;
 
 import android.support.annotation.Nullable;
 import com.zing.zalo.adapter.DateZarcelAdapter;
+import com.zing.zalo.annotations.Ignore;
 import com.zing.zalo.annotations.Zarcel;
 import com.zing.zalo.data.serialization.Serializable;
 import com.zing.zalo.data.serialization.SerializedInput;
@@ -17,7 +18,10 @@ public class Human implements Serializable {
     public Date birthdate;
     public Human[] children;
     public transient Human father;
+
     private int __hidden__;
+    @Ignore
+    public Math nonZarcelObject;
 
     @Override
     public void serialize(SerializedOutput output) {

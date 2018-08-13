@@ -51,10 +51,6 @@ class ZarcelProcessorGenerator {
         finish(filer);
     }
 
-    private void parseThrownClass() {
-
-    }
-
     private void finish(Filer filer) throws IOException {
         classBuilder.build().generateFile(filer);
     }
@@ -112,6 +108,14 @@ class ZarcelProcessorGenerator {
                 isPrivate = true;
             }
         }
+
+        List<? extends AnnotationMirror> annotationMirrors = property.getAnnotationMirrors();
+        for (AnnotationMirror annotationMirror : annotationMirrors) {
+            String simpleName = annotationMirror.getAnnotationType().asElement().getSimpleName().toString();
+            if (simpleName.equals("Ignore"))
+                return;
+        }
+
         if (isPrivate) {
             showPrivateWarning(property);
             return;
@@ -131,12 +135,7 @@ class ZarcelProcessorGenerator {
     }
 
     private void showPrivateWarning(Element property) {
-        List<? extends AnnotationMirror> annotationMirrors = property.getAnnotationMirrors();
-        for (AnnotationMirror annotationMirror : annotationMirrors) {
-            String simpleName = annotationMirror.getAnnotationType().asElement().getSimpleName().toString();
-            if (simpleName.equals("Ignore"))
-                return;
-        }
+
         messager.printMessage(Diagnostic.Kind.WARNING, "private property: " + property.getSimpleName() + " in " + property.getEnclosingElement().toString() + " is ignored.");
     }
 
@@ -171,7 +170,22 @@ class ZarcelProcessorGenerator {
         classBuilder.addProperty(builder.build());
     }
 
+    private boolean validDeclaredProperty(Element property) {
+        String propertyClassName = property.asType().toString().replace("[]", "");
+        TypeElement typeElement = elements.getTypeElement(propertyClassName);
+        if (typeElement.getAnnotation(Zarcel.class) == null) {
+            messager.printMessage(Diagnostic.Kind.ERROR, "In class " + property.getEnclosingElement().toString() +
+                    ", property " + property.getSimpleName() + ": " + propertyClassName + " can not be serialized. " +
+                    "Add transient or @Ignore to skip serialization, or " +
+                    "add @Zarcel.Custom(adapter) to customize your own.");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private void parseDeclaredProperty(Element property) throws ZarcelException {
+
         // Config
         ZarcelProperty.Builder builder = ZarcelProperty.builder();
         parseInnerAnnotation(property, builder);
@@ -187,6 +201,9 @@ class ZarcelProcessorGenerator {
                     .setDataType(new AbstractMap.SimpleEntry<>(null, "String"))
                     .setPropertyName(property.getSimpleName().toString());
         } else {
+            if (!validDeclaredProperty(property)) {
+                return;
+            }
             builder.setType(ZarcelProperty.Type.OBJECT)
                     .setDataType(new AbstractMap.SimpleEntry<>(objectPackage, objectName))
                     .setPropertyName(property.getSimpleName().toString());
@@ -208,8 +225,11 @@ class ZarcelProcessorGenerator {
                 parsePrimitiveArray(property, builder);
                 break;
             case OBJECT_ARRAY:
-                parseObjectArray(property, builder);
-                break;
+                if (parseObjectArray(property, builder)) {
+                    break;
+                } else {
+                    return;
+                }
         }
         classBuilder.addProperty(builder.build());
     }
@@ -247,7 +267,7 @@ class ZarcelProcessorGenerator {
         }
     }
 
-    private void parseObjectArray(Element property, ZarcelProperty.Builder builder) {
+    private boolean parseObjectArray(Element property, ZarcelProperty.Builder builder) {
 
         String objectPackage = elements.getPackageOf(elements.getTypeElement(property.asType().toString().replace("[]", ""))).toString();
         String objectName = elements.getTypeElement(property.asType().toString().replace("[]", ""))
@@ -259,10 +279,14 @@ class ZarcelProcessorGenerator {
                     .setDataType(new AbstractMap.SimpleEntry<>(null, "String"))
                     .setPropertyName(property.getSimpleName().toString());
         } else {
+            if (!validDeclaredProperty(property)) {
+                return false;
+            }
             builder.setType(ZarcelProperty.Type.OBJECT_ARRAY)
                     .setDataType(new AbstractMap.SimpleEntry<>(objectPackage, objectName))
                     .setPropertyName(property.getSimpleName().toString());
         }
+        return true;
     }
 
     private void parseInnerAnnotation(Element property, ZarcelProperty.Builder builder) throws ZarcelException {

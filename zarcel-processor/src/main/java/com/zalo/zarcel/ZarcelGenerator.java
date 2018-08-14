@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.processing.Filer;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 
 import static javax.lang.model.element.Modifier.STATIC;
@@ -33,7 +34,12 @@ class ZarcelGenerator {
 
         argPackage = data.thisPackage().trim();
         if (hasProperty)
-            Collections.sort(data.properties(), (o1, o2) -> o1.version() - o2.version());
+            Collections.sort(data.properties(), new Comparator<ZarcelProperty>() {
+                @Override
+                public int compare(ZarcelProperty o1, ZarcelProperty o2) {
+                    return o1.version() - o2.version();
+                }
+            });
     }
 
     public void generateFile(@Nonnull ZarcelClass data, Filer filer) throws IOException {

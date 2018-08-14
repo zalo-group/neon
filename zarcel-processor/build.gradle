@@ -22,8 +22,8 @@ dependencies {
     implementation project(':zarcel-annotations')
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
 compileJava.options.compilerArgs.add('-parameters')
 compileTestJava.options.compilerArgs.add('-parameters')
 ext.VERSION_NAME = versionberg.name

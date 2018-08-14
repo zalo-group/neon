@@ -15,8 +15,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
 ext.VERSION_NAME = versionberg.name
 
 apply from: '../gradle-mvn-push.gradle'

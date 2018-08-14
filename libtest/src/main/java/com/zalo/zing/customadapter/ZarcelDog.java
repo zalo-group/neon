@@ -15,7 +15,7 @@ public class ZarcelDog extends ZarcelAnimal implements Serializable {
 
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelDog$Zarcel.serialize(this, serializedOutput);
+        ZarcelDog__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<ZarcelDog> CREATOR = new Serializable.Creator<ZarcelDog>() {
@@ -24,7 +24,7 @@ public class ZarcelDog extends ZarcelAnimal implements Serializable {
         public ZarcelDog createFromSerialized(SerializedInput input) {
             try {
                 ZarcelDog result = new ZarcelDog();
-                ZarcelDog$Zarcel.createFromSerialized(result, input);
+                ZarcelDog__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

@@ -26,7 +26,7 @@ public class ZarcelPrimitive implements Serializable {
     private boolean _no_warning;
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelPrimitive$Zarcel.serialize(this, serializedOutput);
+        ZarcelPrimitive__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<ZarcelPrimitive> CREATOR = new Creator<ZarcelPrimitive>() {
@@ -35,7 +35,7 @@ public class ZarcelPrimitive implements Serializable {
         public ZarcelPrimitive createFromSerialized(SerializedInput input) {
             try {
                 ZarcelPrimitive result = new ZarcelPrimitive();
-                ZarcelPrimitive$Zarcel.createFromSerialized(result, input);
+                ZarcelPrimitive__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

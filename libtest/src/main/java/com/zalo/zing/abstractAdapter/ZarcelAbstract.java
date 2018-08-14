@@ -17,7 +17,7 @@ public class ZarcelAbstract implements Serializable {
     @Override
     public void serialize(SerializedOutput serializedOutput) {
         try {
-            ZarcelAbstract$Zarcel.serialize(this, serializedOutput);
+            ZarcelAbstract__Zarcel.serialize(this, serializedOutput);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
@@ -33,7 +33,7 @@ public class ZarcelAbstract implements Serializable {
         public ZarcelAbstract createFromSerialized(SerializedInput input) {
             try {
                 ZarcelAbstract result = new ZarcelAbstract();
-                ZarcelAbstract$Zarcel.createFromSerialized(result, input);
+                ZarcelAbstract__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

@@ -13,7 +13,7 @@ public class ZarcelBike extends ZarcelVehicle implements Serializable {
 
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelBike$Zarcel.serialize(this, serializedOutput);
+        ZarcelBike__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<com.zalo.zing.abstractAdapter.ZarcelBike> CREATOR = new Serializable.Creator<com.zalo.zing.abstractAdapter.ZarcelBike>() {
@@ -22,7 +22,7 @@ public class ZarcelBike extends ZarcelVehicle implements Serializable {
         public com.zalo.zing.abstractAdapter.ZarcelBike createFromSerialized(SerializedInput input) {
             try {
                 com.zalo.zing.abstractAdapter.ZarcelBike result = new com.zalo.zing.abstractAdapter.ZarcelBike();
-                ZarcelBike$Zarcel.createFromSerialized(result, input);
+                ZarcelBike__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

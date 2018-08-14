@@ -19,7 +19,7 @@ public class ZarcelBaseVersion implements Serializable {
 
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelBaseVersion$Zarcel.serialize(this, serializedOutput);
+        ZarcelBaseVersion__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<ZarcelBaseVersion> CREATOR = new Serializable.Creator<ZarcelBaseVersion>() {
@@ -27,7 +27,7 @@ public class ZarcelBaseVersion implements Serializable {
         @Override
         public ZarcelBaseVersion createFromSerialized(SerializedInput input) {
             ZarcelBaseVersion result = new ZarcelBaseVersion();
-            ZarcelBaseVersion$Zarcel.createFromSerialized(result, input);
+            ZarcelBaseVersion__Zarcel.createFromSerialized(result, input);
             return result;
         }
     };

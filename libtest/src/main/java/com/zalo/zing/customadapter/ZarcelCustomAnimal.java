@@ -15,7 +15,7 @@ public class ZarcelCustomAnimal implements Serializable {
 
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelCustomAnimal$Zarcel.serialize(this, serializedOutput);
+        ZarcelCustomAnimal__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<ZarcelCustomAnimal> CREATOR = new Serializable.Creator<ZarcelCustomAnimal>() {
@@ -24,7 +24,7 @@ public class ZarcelCustomAnimal implements Serializable {
         public ZarcelCustomAnimal createFromSerialized(SerializedInput input) {
 
             ZarcelCustomAnimal result = new ZarcelCustomAnimal();
-            ZarcelCustomAnimal$Zarcel.createFromSerialized(result, input);
+            ZarcelCustomAnimal__Zarcel.createFromSerialized(result, input);
             return result;
         }
     };

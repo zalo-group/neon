@@ -17,7 +17,7 @@ public class ZarcelObjectTwo implements Serializable {
 
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelObjectTwo$Zarcel.serialize(this, serializedOutput);
+        ZarcelObjectTwo__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Creator<ZarcelObjectTwo> CREATOR = new Creator<ZarcelObjectTwo>() {
@@ -26,7 +26,7 @@ public class ZarcelObjectTwo implements Serializable {
         public ZarcelObjectTwo createFromSerialized(SerializedInput input) {
             try {
                 ZarcelObjectTwo result = new ZarcelObjectTwo();
-                ZarcelObjectTwo$Zarcel.createFromSerialized(result, input);
+                ZarcelObjectTwo__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

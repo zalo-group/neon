@@ -30,7 +30,7 @@ public class ZarcelNewVersion implements Serializable {
 
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelNewVersion$Zarcel.serialize(this, serializedOutput);
+        ZarcelNewVersion__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<ZarcelNewVersion> CREATOR = new Serializable.Creator<ZarcelNewVersion>() {
@@ -39,7 +39,7 @@ public class ZarcelNewVersion implements Serializable {
         public ZarcelNewVersion createFromSerialized(SerializedInput input) {
             try {
                 ZarcelNewVersion result = new ZarcelNewVersion();
-                ZarcelNewVersion$Zarcel.createFromSerialized(result, input);
+                ZarcelNewVersion__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

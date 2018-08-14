@@ -15,7 +15,7 @@ public class ZarcelCat extends ZarcelAnimal implements Serializable {
 
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelCat$Zarcel.serialize(this, serializedOutput);
+        ZarcelCat__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<ZarcelCat> CREATOR = new Serializable.Creator<ZarcelCat>() {
@@ -24,7 +24,7 @@ public class ZarcelCat extends ZarcelAnimal implements Serializable {
         public ZarcelCat createFromSerialized(SerializedInput input) {
             try {
                 ZarcelCat result = new ZarcelCat();
-                com.zalo.zing.customadapter.ZarcelCat$Zarcel.createFromSerialized(result, input);
+                com.zalo.zing.customadapter.ZarcelCat__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

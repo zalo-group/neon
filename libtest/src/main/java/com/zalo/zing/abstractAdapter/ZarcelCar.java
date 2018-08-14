@@ -14,7 +14,7 @@ public class ZarcelCar extends ZarcelVehicle implements Serializable {
 
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelCar$Zarcel.serialize(this, serializedOutput);
+        ZarcelCar__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<ZarcelCar> CREATOR = new Serializable.Creator<ZarcelCar>() {
@@ -23,7 +23,7 @@ public class ZarcelCar extends ZarcelVehicle implements Serializable {
         public ZarcelCar createFromSerialized(SerializedInput input) {
             try {
                 ZarcelCar result = new ZarcelCar();
-                ZarcelCar$Zarcel.createFromSerialized(result, input);
+                ZarcelCar__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

@@ -16,7 +16,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 
 class ZarcelGenerator {
 
-    private static final String ZARCEL_SUFFIX = "$Zarcel";
+    private static final String ZARCEL_SUFFIX = "__Zarcel";
 
     private String argClass, argPackage, argClassName;
     private boolean hasProperty = true;
@@ -154,20 +154,20 @@ class ZarcelGenerator {
 
                         if (!property.objectNullable()) {
                             builder.beginControlFlow("");
-                            builder.addStatement("$T tmp$$customAdapter = new $T()",
+                            builder.addStatement("$T tmp__customAdapter = new $T()",
                                     ClassName.get(property.dataType().getKey(), property.dataType().getValue()),
                                     ClassName.get(property.dataType().getKey(), property.dataType().getValue()));
-                            builder.addStatement("tmp$$customAdapter.serialize($L.$L,writer)",
+                            builder.addStatement("tmp__customAdapter.serialize($L.$L,writer)",
                                     argClassName, property.propertyName());
                             builder.endControlFlow("");
                         } else {
                             builder.beginControlFlow("if ($L.$L != null)", argClassName, property.propertyName())
                                     .addStatement("writer.writeBool(true)");
 
-                            builder.addStatement("$T tmp$$customAdapter = new $T()",
+                            builder.addStatement("$T tmp__customAdapter = new $T()",
                                     ClassName.get(property.dataType().getKey(), property.dataType().getValue()),
                                     ClassName.get(property.dataType().getKey(), property.dataType().getValue()));
-                            builder.addStatement("tmp$$customAdapter.serialize($L.$L,writer)",
+                            builder.addStatement("tmp__customAdapter.serialize($L.$L,writer)",
                                     argClassName, property.propertyName());
 
                             builder.nextControlFlow("else")
@@ -281,18 +281,18 @@ class ZarcelGenerator {
                     case CUSTOM_ADAPTER:
                         if (!property.objectNullable()) {
                             builder.beginControlFlow("");
-                            builder.addStatement("$T tmp$$customAdapter = new $T()",
+                            builder.addStatement("$T tmp__customAdapter = new $T()",
                                     ClassName.get(property.dataType().getKey(), property.dataType().getValue()),
                                     ClassName.get(property.dataType().getKey(), property.dataType().getValue()));
-                            builder.addStatement("$L.$L = tmp$$customAdapter.createFromSerialized(reader)",
+                            builder.addStatement("$L.$L = tmp__customAdapter.createFromSerialized(reader)",
                                     argClassName, property.propertyName());
                             builder.endControlFlow();
                         } else {
                             builder.beginControlFlow("if (reader.readBool())")
-                                    .addStatement("$T tmp$$customAdapter = new $T()",
+                                    .addStatement("$T tmp_customAdapter = new $T()",
                                             ClassName.get(property.dataType().getKey(), property.dataType().getValue()),
                                             ClassName.get(property.dataType().getKey(), property.dataType().getValue()));
-                            builder.addStatement("$L.$L = tmp$$customAdapter.createFromSerialized(reader)",
+                            builder.addStatement("$L.$L = tmp_customAdapter.createFromSerialized(reader)",
                                     argClassName, property.propertyName());
                             builder.endControlFlow();
                         }

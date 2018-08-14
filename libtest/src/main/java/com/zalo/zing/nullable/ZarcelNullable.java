@@ -19,7 +19,7 @@ public class ZarcelNullable implements Serializable {
 
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelNullable$Zarcel.serialize(this, serializedOutput);
+        ZarcelNullable__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<ZarcelNullable> CREATOR = new Serializable.Creator<ZarcelNullable>() {
@@ -28,7 +28,7 @@ public class ZarcelNullable implements Serializable {
         public ZarcelNullable createFromSerialized(SerializedInput input) {
             try {
                 ZarcelNullable result = new ZarcelNullable();
-                ZarcelNullable$Zarcel.createFromSerialized(result, input);
+                ZarcelNullable__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

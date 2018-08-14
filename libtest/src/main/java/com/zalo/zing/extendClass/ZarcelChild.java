@@ -12,7 +12,7 @@ public class ZarcelChild extends ZarcelParent implements Serializable {
 
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        ZarcelChild$Zarcel.serialize(this, serializedOutput);
+        ZarcelChild__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<ZarcelChild> CREATOR = new Serializable.Creator<ZarcelChild>() {
@@ -21,7 +21,7 @@ public class ZarcelChild extends ZarcelParent implements Serializable {
         public ZarcelChild createFromSerialized(SerializedInput input) {
             try {
                 ZarcelChild result = new ZarcelChild();
-                ZarcelChild$Zarcel.createFromSerialized(result, input);
+                ZarcelChild__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

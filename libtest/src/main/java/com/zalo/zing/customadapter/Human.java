@@ -25,7 +25,7 @@ public class Human implements Serializable {
 
     @Override
     public void serialize(SerializedOutput output) {
-        Human$Zarcel.serialize(this, output);
+        Human__Zarcel.serialize(this, output);
     }
 
     public static Serializable.Creator<Human> CREATOR = new Serializable.Creator<Human>() {
@@ -34,7 +34,7 @@ public class Human implements Serializable {
         public Human createFromSerialized(SerializedInput input) {
             try {
                 Human result = new Human();
-                Human$Zarcel.createFromSerialized(result, input);
+                Human__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

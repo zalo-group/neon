@@ -38,26 +38,26 @@ public class Example implements Serializable {
     
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        Example$Zarcel.serialize(this, serializedOutput);
+        Example__Zarcel.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<Example> CREATOR = new Creator<Example>() {
         @Override
         public Example createFromSerialized(SerializedInput input) {
             Example result = new Example();
-            Example$Zarcel.createFromSerialized(result, input);
+            Example__Zarcel.createFromSerialized(result, input);
             return result;
         }
     };
 }
 
 ```
-<b>Lưu ý:</b> Zarcel sẽ xử lí và tạo ra class có dạng \<Class\>$Zarcel gồm 2 phương thức:<br>
+<b>Lưu ý:</b> Zarcel sẽ xử lí và tạo ra class có dạng \<Class\>__Zarcel gồm 2 phương thức:<br>
  
  void serialize(\<Class\>, SerializedInput);<br>
  void deserialize(<Class>, SerializedOutput);<br>
  
- Các phương thức này có thể gọi đến 2 phương thức bắt buộc của class, hoặc gọi đến 2 phương thức của các class $Zarcel khác. 
+ Các phương thức này có thể gọi đến 2 phương thức bắt buộc của class, hoặc gọi đến 2 phương thức của các class __Zacel khác. 
 
 ### Các kiểu dữ liệu được phép sử dụng
 

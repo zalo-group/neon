@@ -2,6 +2,9 @@ package com.zing.zalo.data.serialization;
 
 import java.nio.ByteBuffer;
 
+/**
+ * A 200% faster version of {@link SerializedByteArrayInput}.
+ */
 public class SerializedByteBufferInput implements SerializedInput {
 
     private ByteBuffer in;

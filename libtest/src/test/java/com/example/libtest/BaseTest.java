@@ -20,13 +20,13 @@ import static org.junit.Assert.*;
 
 public class BaseTest {
 
-    private static final double DOUBLE_DELTA = 1e-16;
-    private static final float FLOAT_DELTA = 1e-5f;
+    static final double DOUBLE_DELTA = 1e-16;
+    static final float FLOAT_DELTA = 1e-5f;
 
 
-    private Random random = new Random();
+    Random random = new Random();
 
-    private int getInt() {
+    int getInt() {
         return Math.abs(random.nextInt());
     }
 
@@ -97,7 +97,7 @@ public class BaseTest {
     }
 
     void setZarcelObjectTwoValue(ZarcelObjectTwo objectTwo) {
-        objectTwo.mSize = getInt() % 100 + 10;
+        objectTwo.mSize = 100;
         objectTwo.mElement = new int[objectTwo.mSize];
         for (int i = 0; i < objectTwo.mSize; i++) {
             objectTwo.mElement[i] = Math.abs(random.nextInt());
@@ -120,34 +120,34 @@ public class BaseTest {
         setZarcelObjectTwoValue(object.mSecondValue);
         object.status = "incoming";
 
-        object.mArrayPet = new ZarcelObjectOne[getInt() % 100 + 10];
+        object.mArrayPet = new ZarcelObjectOne[100];
         for (int i = 0; i < object.mArrayPet.length; i++) {
             object.mArrayPet[i] = new ZarcelObjectOne();
             setZarcelObjectOneValue(object.mArrayPet[i]);
         }
 
-        object.mArrayCats = new ZarcelObjectTwo[getInt() % 100 + 10];
+        object.mArrayCats = new ZarcelObjectTwo[100];
         for (int i = 0; i < object.mArrayCats.length; i++) {
             object.mArrayCats[i] = new ZarcelObjectTwo();
             setZarcelObjectTwoValue(object.mArrayCats[i]);
         }
 
-        object.mSize = new int[getInt() % 100 + 10];
+        object.mSize = new int[100];
         for (int i = 0; i < object.mSize.length; i++) {
             object.mSize[i] = Math.abs(random.nextInt());
         }
 
-        object.mPoint = new float[getInt() % 100 + 10];
+        object.mPoint = new float[100];
         for (int i = 0; i < object.mPoint.length; i++) {
             object.mPoint[i] = Math.abs(random.nextFloat());
         }
 
-        object.mSeconds = new double[getInt() % 100 + 10];
+        object.mSeconds = new double[100];
         for (int i = 0; i < object.mSeconds.length; i++) {
             object.mSeconds[i] = Math.abs(random.nextDouble());
         }
 
-        object.mSizeWrong = new boolean[getInt() % 100 + 10];
+        object.mSizeWrong = new boolean[100];
         for (int i = 0; i < object.mSizeWrong.length; i++) {
             object.mSizeWrong[i] = random.nextBoolean();
         }

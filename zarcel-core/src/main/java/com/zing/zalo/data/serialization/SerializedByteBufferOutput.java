@@ -7,24 +7,40 @@ import java.nio.ByteBuffer;
  */
 public class SerializedByteBufferOutput implements SerializedOutput {
     private ByteBuffer out;
-    private int capacity = 0;
+    private int capacity;
     private int maxCapacity = 1 << 19; // 512kB
-    private final int INT16_NEEDED = 2;
-    private final int INT32_NEEDED = 4;
-    private final int INT64_NEEDED = 8;
-    private final int BYTE_NEEDED = 1;
-    private final int DEFAULT_SIZE = 1024;
+    private int defaultSize = 1024;
+    private static final int INT16_NEEDED = 2;
+    private static final int INT32_NEEDED = 4;
+    private static final int INT64_NEEDED = 8;
+    private static final int BYTE_NEEDED = 1;
 
 
     public SerializedByteBufferOutput() {
-        out = ByteBuffer.allocate(DEFAULT_SIZE);
-        capacity = DEFAULT_SIZE;
+        out = ByteBuffer.allocate(defaultSize);
+        capacity = defaultSize;
     }
 
     public SerializedByteBufferOutput(int maxCapacity) {
-        out = ByteBuffer.allocate(DEFAULT_SIZE);
-        capacity = DEFAULT_SIZE;
+        this();
         this.maxCapacity = maxCapacity;
+        if (maxCapacity < defaultSize) {
+            out = ByteBuffer.allocate(maxCapacity);
+            capacity = maxCapacity;
+        }
+    }
+
+    SerializedByteBufferOutput(int maxCapacity, int defaultSize) {
+        this.defaultSize = defaultSize;
+        this.maxCapacity = maxCapacity;
+        if (defaultSize > maxCapacity)
+            this.defaultSize = maxCapacity;
+        out = ByteBuffer.allocate(defaultSize);
+        if (defaultSize <= 0)
+            capacity = 1;
+        else
+            capacity = defaultSize;
+
     }
 
     public void cleanup() {
@@ -99,7 +115,6 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     @Override
     public void writeBytes(byte[] b) {
         try {
-            ensureCapacity(b.length);
             writeBytes(b, 0, b.length);
         } catch (Exception e) {
             throw new RuntimeException("write byte error", e);
@@ -109,8 +124,8 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     @Override
     public void writeBytes(byte[] b, int offset, int count) {
         try {
-            ensureCapacity(count);
             writeInt32(count);
+            ensureCapacity(count);
             out.put(b, offset, count);
         } catch (Exception e) {
             throw new RuntimeException("write byte error", e);

@@ -20,8 +20,8 @@ dependencies {
     annotationProcessor project(':zarcel-processor')
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+sourceCompatibility = versions.sourceCompatibilityVersion
+targetCompatibility = versions.targetCompatibilityVersion
 compileJava.options.compilerArgs.add('-parameters')
 compileTestJava.options.compilerArgs.add('-parameters')
 ext.VERSION_NAME = versionberg.name

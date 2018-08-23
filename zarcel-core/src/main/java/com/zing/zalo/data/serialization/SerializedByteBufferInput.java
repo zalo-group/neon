@@ -110,9 +110,7 @@ public class SerializedByteBufferInput implements SerializedInput {
             int l = readInt32();
             if (l > length) throw new RuntimeException("read byte length error");
             byte[] b = new byte[l];
-            if (in.get(b).array().length != l) {
-                throw new RuntimeException("read byte error");
-            }
+            in.get(b);
             position += l;
             return b;
         } catch (Exception e) {

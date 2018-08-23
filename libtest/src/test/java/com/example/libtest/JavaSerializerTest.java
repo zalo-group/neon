@@ -1,19 +1,11 @@
 package com.example.libtest;
 
-import android.os.Parcel;
-import android.support.test.runner.AndroidJUnit4;
 import com.zalo.zing.javaobject.JavaObject;
 import com.zalo.zing.javaobject.JavaOne;
 import com.zalo.zing.javaobject.JavaTwo;
-import com.zalo.zing.object.ZarcelObject;
-import com.zalo.zing.object.ZarcelObjectOne;
-import com.zalo.zing.object.ZarcelObjectTwo;
-import com.zing.zalo.data.serialization.SerializedByteBufferInput;
-import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.*;
 

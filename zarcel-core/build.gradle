@@ -12,11 +12,12 @@ versionberg {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation deps.junit
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+sourceCompatibility = versions.sourceCompatibilityVersion
+targetCompatibility = versions.targetCompatibilityVersion
+
 ext.VERSION_NAME = versionberg.name
 
 apply from: '../gradle-mvn-push.gradle'

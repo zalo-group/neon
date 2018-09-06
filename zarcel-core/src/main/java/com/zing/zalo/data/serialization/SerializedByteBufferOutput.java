@@ -1,5 +1,6 @@
 package com.zing.zalo.data.serialization;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 /**
@@ -10,10 +11,6 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     private int capacity;
     private int maxCapacity = 1 << 19; // 512kB
     private int defaultSize = 1024;
-    private static final int INT16_NEEDED = 2;
-    private static final int INT32_NEEDED = 4;
-    private static final int INT64_NEEDED = 8;
-    private static final int BYTE_NEEDED = 1;
 
 
     public SerializedByteBufferOutput() {
@@ -69,10 +66,7 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     @Override
     public void writeInt16(int x) {
         try {
-            ensureCapacity(INT16_NEEDED);
-            for (int i = 0; i < 2; i++) {
-                out.put((byte) (x >> (i * 8)));
-            }
+            writeShortHeader(ZarcelDefs.TYPE_SHORT, x);
         } catch (Exception e) {
             throw new RuntimeException("writeInt16: write byte error", e);
         }
@@ -81,10 +75,7 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     @Override
     public void writeInt32(int x) {
         try {
-            ensureCapacity(INT32_NEEDED);
-            for (int i = 0; i < 4; i++) {
-                out.put((byte) (x >> (i * 8)));
-            }
+            writeIntHeader(ZarcelDefs.TYPE_INT, x);
         } catch (Exception e) {
             throw new RuntimeException("write byte error", e);
         }
@@ -93,10 +84,7 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     @Override
     public void writeInt64(long x) {
         try {
-            ensureCapacity(INT64_NEEDED);
-            for (int i = 0; i < 8; i++) {
-                out.put((byte) (x >> (i * 8)));
-            }
+            writeLongHeader(ZarcelDefs.TYPE_LONG, x);
         } catch (Exception e) {
             throw new RuntimeException("write byte error", e);
         }
@@ -105,8 +93,7 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     @Override
     public void writeBool(boolean value) {
         try {
-            ensureCapacity(BYTE_NEEDED);
-            out.put((byte) (value ? 1 : 0));
+            writeBoolHeader(ZarcelDefs.TYPE_BOOLEAN, value);
         } catch (Exception e) {
             throw new RuntimeException("write byte error", e);
         }
@@ -115,18 +102,16 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     @Override
     public void writeBytes(byte[] b) {
         try {
-            writeBytes(b, 0, b.length);
+            writeBytesHeader(ZarcelDefs.TYPE_BYTE_ARRAY, b, 0, b.length);
         } catch (Exception e) {
             throw new RuntimeException("write byte error", e);
         }
     }
 
     @Override
-    public void writeBytes(byte[] b, int offset, int count) {
+    public void writeBytes(byte[] b, int offset, int length) {
         try {
-            writeInt32(count);
-            ensureCapacity(count);
-            out.put(b, offset, count);
+            writeBytesHeader(ZarcelDefs.TYPE_BYTE_ARRAY, b, offset, length);
         } catch (Exception e) {
             throw new RuntimeException("write byte error", e);
         }
@@ -135,8 +120,7 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     @Override
     public void writeByte(int i) {
         try {
-            ensureCapacity(BYTE_NEEDED);
-            out.put((byte) i);
+            writeByteHeader(ZarcelDefs.TYPE_BYTE, (byte) i);
         } catch (Exception e) {
             throw new RuntimeException("write byte error", e);
         }
@@ -145,8 +129,7 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     @Override
     public void writeByte(byte b) {
         try {
-            ensureCapacity(BYTE_NEEDED);
-            out.put(b);
+            writeByteHeader(ZarcelDefs.TYPE_BYTE, b);
         } catch (Exception e) {
             throw new RuntimeException("write byte error", e);
         }
@@ -155,16 +138,7 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     @Override
     public void writeString(String s) {
         try {
-            if (s == null) {
-                writeInt32(-1);
-                return;
-            }
-            if (s.isEmpty()) {
-                writeInt32(0);
-                return;
-            }
-            byte b[] = s.getBytes("UTF-8");
-            writeBytes(b, 0, b.length);
+            writeStringHeader(ZarcelDefs.TYPE_STRING, s);
         } catch (Exception e) {
             throw new RuntimeException("write byte error", e);
         }
@@ -187,10 +161,97 @@ public class SerializedByteBufferOutput implements SerializedOutput {
     @Override
     public void writeDouble(double d) {
         try {
-            writeInt64(Double.doubleToRawLongBits(d));
+            writeLongHeader(ZarcelDefs.TYPE_DOUBLE, Double.doubleToRawLongBits(d));
         } catch (Exception e) {
             throw new RuntimeException("write byte error", e);
         }
+    }
+
+    private void writeHeader(byte type) {
+        ensureCapacity(ZarcelDefs.SIZE_BYTE);
+        out.put(type);
+    }
+
+    private void writeByteHeader(byte type, byte value) {
+        if (value == 0) {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_ZERO));
+        } else {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_BYTE));
+            ensureCapacity(ZarcelDefs.SIZE_BYTE);
+            out.put(value);
+        }
+    }
+
+    private void writeBoolHeader(byte type, boolean value) {
+        if (value)
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_DEFAULT));
+        else
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_ZERO));
+    }
+
+    private void writeShortHeader(byte type, short value) {
+        if (value == 0) {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_ZERO));
+        } else if ((value & 0xFF00) == 0) {
+            writeByteHeader(type, (byte) value);
+        } else {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_SHORT));
+            ensureCapacity(ZarcelDefs.SIZE_SHORT);
+            out.putShort(value);
+        }
+    }
+
+    private void writeShortHeader(byte type, int value) {
+        writeShortHeader(type, (short) value);
+    }
+
+    private void writeIntHeader(byte type, int value) {
+        if (value == 0) {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_ZERO));
+        } else if ((value & 0xFFFF0000) == 0) {
+            writeShortHeader(type, value);
+        } else {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_INT));
+            ensureCapacity(ZarcelDefs.SIZE_INT);
+            out.putInt(value);
+        }
+    }
+
+    private void writeLongHeader(byte type, long value) {
+        if (value == 0) {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_ZERO));
+        } else if ((value & 0xFFFFFFFF00000000L) == 0) {
+            writeIntHeader(type, (int) value);
+        } else {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_LONG));
+            ensureCapacity(ZarcelDefs.SIZE_LONG);
+            out.putLong(value);
+        }
+    }
+
+    private void writeBytesHeader(byte type, byte[] b, int offset, int length) {
+        if (length == 0) {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_ZERO));
+            return;
+        } else {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_INT));
+        }
+        writeIntHeader(ZarcelDefs.TYPE_INT, length);
+        ensureCapacity(length);
+        out.put(b, offset, length);
+    }
+
+    private void writeStringHeader(byte type, String s) throws UnsupportedEncodingException {
+        if (s == null) {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_NULL));
+            return;
+        }
+        if (s.isEmpty()) {
+            writeHeader(ZarcelDefs.makeHeader(type, ZarcelDefs.SUBTYPE_ZERO));
+            return;
+        }
+        byte b[] = s.getBytes("UTF-8");
+        writeBytesHeader(type, b, 0, b.length);
     }
 
     public byte[] toByteArray() {

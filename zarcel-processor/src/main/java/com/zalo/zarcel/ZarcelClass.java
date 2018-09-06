@@ -30,12 +30,15 @@ public abstract class ZarcelClass {
 
     public abstract ZarcelArrayList<Map.Entry<String, String>> deserializeException();
 
-
     public abstract int version();
+
+
+    public abstract int compatibleSince();
 
     public static Builder builder() {
         return new com.zalo.zarcel.AutoValue_ZarcelClass.Builder()
                 .setVersion(0)
+                .setCompatibleSince(0)
                 .setInheritanceSupported(false);
     }
 
@@ -46,6 +49,8 @@ public abstract class ZarcelClass {
         public abstract Builder setThisPackage(String thisPackage);
 
         public abstract Builder setVersion(int version);
+
+        public abstract Builder setCompatibleSince(int compatibleSince);
 
         public abstract Builder setInheritanceSupported(boolean serializeParent);
 

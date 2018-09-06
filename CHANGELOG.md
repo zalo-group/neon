@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Zarcel v0.4.0 *(2018-09-06)*
+----------------------------
+* Support compatibleSince.
+* Add header to SerializeByteBuffer.
+* Fix small bug.
+
 Zarcel v0.3.0 *(2018-08-23)*
 ----------------------------
 * Thêm SerializedByteBufferInput và SerializedByteBufferOutput vào zarcel-core.

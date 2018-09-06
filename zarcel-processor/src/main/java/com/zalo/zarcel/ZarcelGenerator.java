@@ -24,6 +24,8 @@ class ZarcelGenerator {
     private void init(@Nonnull ZarcelClass data) {
         argClass = data.name().trim();
         argClassName = argClass.toLowerCase();
+        if (argClassName.lastIndexOf(".") != -1)
+            argClassName = argClassName.substring(argClassName.lastIndexOf(".") + 1);
         if (argClass.equals(argClassName)) {
             argClassName = "_" + argClassName;
         }
@@ -46,7 +48,13 @@ class ZarcelGenerator {
         init(data);
         MethodSpec serialize = generateSerializeMethod(data);
         MethodSpec deserialize = generateDeserializeMethod(data);
-        TypeSpec.Builder zarcelClassBuilder = TypeSpec.classBuilder(data.name().trim() + ZARCEL_SUFFIX)
+        int lastIndex = argClass.lastIndexOf(".") + 1;
+        String className;
+        if (lastIndex != -1)
+            className = argClass.substring(lastIndex);
+        else
+            className = argClass;
+        TypeSpec.Builder zarcelClassBuilder = TypeSpec.classBuilder(className + ZARCEL_SUFFIX)
                 .addMethod(serialize)
                 .addMethod(deserialize);
         TypeSpec zarcelClass = zarcelClassBuilder.build();
@@ -132,23 +140,16 @@ class ZarcelGenerator {
                         }
                         break;
                     case PRIMITIVE_ARRAY:
-                        if (property.arraySize() != null && property.arraySize() > 0) {
-                            for (int i = 0; i < property.arraySize(); i++) {
-                                writePrimitive(builder, argClassName,
-                                        property.propertyName() + "[" + i + "]", property.dataType().getValue());
-                            }
-                        } else {
-                            builder.beginControlFlow("if ($L.$L != null)", argClassName, property.propertyName())
-                                    .addStatement("writer.writeBool(true)")
-                                    .addStatement("writer.writeInt32($L.$L.length)", argClassName, property.propertyName())
-                                    .beginControlFlow("for (int i=0; i< $L.$L.length; i++)", argClassName, property.propertyName());
-                            writePrimitive(builder, argClassName,
-                                    property.propertyName() + "[i]", property.dataType().getValue());
-                            builder.endControlFlow()
-                                    .nextControlFlow("else")
-                                    .addStatement("writer.writeBool(false)")
-                                    .endControlFlow();
-                        }
+                        builder.beginControlFlow("if ($L.$L != null)", argClassName, property.propertyName())
+                                .addStatement("writer.writeBool(true)")
+                                .addStatement("writer.writeInt32($L.$L.length)", argClassName, property.propertyName())
+                                .beginControlFlow("for (int i=0; i< $L.$L.length; i++)", argClassName, property.propertyName());
+                        writePrimitive(builder, argClassName,
+                                property.propertyName() + "[i]", property.dataType().getValue());
+                        builder.endControlFlow()
+                                .nextControlFlow("else")
+                                .addStatement("writer.writeBool(false)")
+                                .endControlFlow();
                         break;
                     case CUSTOM_ADAPTER:
 
@@ -200,6 +201,9 @@ class ZarcelGenerator {
         builder.beginControlFlow("if (version>$L)", data.version())
                 .addStatement("throw new IllegalArgumentException(\"$L is outdated. Update $L to deserialize newest binary data.\")", data.name(), data.name())
                 .endControlFlow();
+        builder.beginControlFlow("if (version<$L)", data.compatibleSince())
+                .addStatement("throw new IllegalArgumentException(\"Binary data of $L is outdated. You must re-serialize latest data.\")", data.name())
+                .endControlFlow();
         // Check base
         if (data.inheritanceSupported()) {
             builder.addStatement("$T.createFromSerialized($L,reader)",
@@ -238,20 +242,14 @@ class ZarcelGenerator {
                         }
                         break;
                     case PRIMITIVE_ARRAY:
-                        if (property.arraySize() != null && property.arraySize() > 0) {
-                            for (int iterator = 0; iterator < property.arraySize(); iterator++) {
-                                readPrimitive(builder, argClassName,
-                                        property.propertyName() + "[" + iterator + "]", property.dataType().getValue());
-                            }
-                        } else {
-                            builder.beginControlFlow("if (reader.readBool())")
-                                    .addStatement("int sizePrimitive = reader.readInt32()")
-                                    .addStatement("$L.$L = new $L[sizePrimitive]", argClassName, property.propertyName(), property.dataType().getValue())
-                                    .beginControlFlow("for (int i=0; i< sizePrimitive; i++)");
-                            readPrimitive(builder, argClassName, property.propertyName() + "[i]", property.dataType().getValue());
-                            builder.endControlFlow()
-                                    .endControlFlow();
-                        }
+                        builder.beginControlFlow("if (reader.readBool())")
+                                .addStatement("int sizePrimitive = reader.readInt32()")
+                                .addStatement("$L.$L = new $L[sizePrimitive]", argClassName, property.propertyName(), property.dataType().getValue())
+                                .beginControlFlow("for (int i=0; i< sizePrimitive; i++)");
+                        readPrimitive(builder, argClassName, property.propertyName() + "[i]", property.dataType().getValue());
+                        builder.endControlFlow()
+                                .endControlFlow();
+
                         break;
                     case OBJECT_ARRAY:
                         if (!property.objectNullable()) {

@@ -11,8 +11,8 @@ public class SerializedByteBufferTest {
 
     private Random random = new Random();
     private byte[] bytes;
-    SerializedByteBufferOutput gWriter;
-    SerializedByteBufferInput gReader;
+    private SerializedByteBufferOutput gWriter;
+    private SerializedByteBufferInput gReader;
 
     @Test
     public void serialize() {
@@ -26,13 +26,14 @@ public class SerializedByteBufferTest {
     public void maxCapacity() {
         // Valid
         allocateCapacity(2);
-        gWriter.writeInt16(24);
+        gWriter.writeInt16(255);
         recreateReader();
-        assertEquals(24, gReader.readInt16());
+        assertEquals(255, gReader.readInt16());
         // Invalid
         try {
-            allocateCapacity(1);
-            gWriter.writeInt16(24);
+            allocateCapacity(2);
+            // Need 2bytes to store
+            gWriter.writeInt16(256);
             fail();
         } catch (RuntimeException e) {
             assertThat(e.toString(), CoreMatchers.containsString("write byte error"));
@@ -41,11 +42,11 @@ public class SerializedByteBufferTest {
 
     @Test
     public void testInt16() {
-        allocateCapacity(2, 1);
+        allocateCapacity(3, 1);
         gWriter.writeInt16(1000);
         recreateReader();
         assertEquals(1000, gReader.readInt16());
-        allocateCapacity(2);
+        allocateCapacity(3);
         gWriter.writeInt16(500);
         recreateReader();
         assertEquals(500, gReader.readInt16());
@@ -53,15 +54,15 @@ public class SerializedByteBufferTest {
 
     @Test
     public void testInt32() {
-        allocateCapacity(4, 1);
+        allocateCapacity(5, 1);
         gWriter.writeInt32(5000000);
         recreateReader();
         assertEquals(5000000, gReader.readInt32());
-        allocateCapacity(4, 3);
+        allocateCapacity(5, 3);
         gWriter.writeInt32(22);
         recreateReader();
         assertEquals(22, gReader.readInt32());
-        allocateCapacity(4);
+        allocateCapacity(5);
         gWriter.writeInt32(99);
         recreateReader();
         assertEquals(99, gReader.readInt32());
@@ -69,15 +70,15 @@ public class SerializedByteBufferTest {
 
     @Test
     public void testInt64() {
-        allocateCapacity(8, 1);
+        allocateCapacity(9, 1);
         gWriter.writeInt64(5000000);
         recreateReader();
         assertEquals(5000000, gReader.readInt64());
-        allocateCapacity(8, 7);
+        allocateCapacity(9, 7);
         gWriter.writeInt64(22);
         recreateReader();
         assertEquals(22, gReader.readInt64());
-        allocateCapacity(8);
+        allocateCapacity(9);
         gWriter.writeInt64(99);
         recreateReader();
         assertEquals(99, gReader.readInt64());
@@ -85,15 +86,15 @@ public class SerializedByteBufferTest {
 
     @Test
     public void testDouble() {
-        allocateCapacity(8, 1);
+        allocateCapacity(9, 1);
         gWriter.writeDouble(22.2558);
         recreateReader();
         assertEquals(22.2558, gReader.readDouble(), 0.0000001);
-        allocateCapacity(8, 7);
+        allocateCapacity(9, 7);
         gWriter.writeDouble(33.33333);
         recreateReader();
         assertEquals(33.33333, gReader.readDouble(), 0.0000001);
-        allocateCapacity(8);
+        allocateCapacity(9);
         gWriter.writeDouble(99);
         recreateReader();
         assertEquals(99, gReader.readDouble(), 0.0000001);
@@ -132,7 +133,7 @@ public class SerializedByteBufferTest {
         gWriter.writeString(sTest);
         recreateReader();
         assertEquals(sTest, gReader.readString());
-        allocateCapacity(sTest.length() + 4, sTest.length()-1);
+        allocateCapacity(sTest.length() + 4, sTest.length() - 1);
         gWriter.writeString(sTest);
         recreateReader();
         assertEquals(sTest, gReader.readString());

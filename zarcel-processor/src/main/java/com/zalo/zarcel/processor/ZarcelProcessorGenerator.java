@@ -60,6 +60,7 @@ class ZarcelProcessorGenerator {
         boolean isParentAbstract = false;
         if (annotation != null) {
             classBuilder.setVersion(annotation.version());
+            classBuilder.setCompatibleSince(annotation.compatibleSince());
             String superClass = type.getSuperclass().toString();
             Set<Modifier> modifiers = elements.getTypeElement(type.getSuperclass().toString()).getModifiers();
 
@@ -152,19 +153,19 @@ class ZarcelProcessorGenerator {
         // Builder
         switch (property.asType().getKind()) {
             case FLOAT:
-                builder.setDataType(new AbstractMap.SimpleEntry<>((String)null, "float"));
+                builder.setDataType(new AbstractMap.SimpleEntry<>((String) null, "float"));
                 break;
             case DOUBLE:
-                builder.setDataType(new AbstractMap.SimpleEntry<>((String)null, "double"));
+                builder.setDataType(new AbstractMap.SimpleEntry<>((String) null, "double"));
                 break;
             case INT:
-                builder.setDataType(new AbstractMap.SimpleEntry<>((String)null, "int"));
+                builder.setDataType(new AbstractMap.SimpleEntry<>((String) null, "int"));
                 break;
             case BOOLEAN:
-                builder.setDataType(new AbstractMap.SimpleEntry<>((String)null, "boolean"));
+                builder.setDataType(new AbstractMap.SimpleEntry<>((String) null, "boolean"));
                 break;
             case LONG:
-                builder.setDataType(new AbstractMap.SimpleEntry<>((String)null, "long"));
+                builder.setDataType(new AbstractMap.SimpleEntry<>((String) null, "long"));
                 break;
         }
         classBuilder.addProperty(builder.build());
@@ -198,7 +199,7 @@ class ZarcelProcessorGenerator {
         String objectName = elements.getTypeElement(property.asType().toString()).getSimpleName().toString();
         if (objectName.equals("String")) {
             builder.setType(ZarcelProperty.Type.PRIMITIVE)
-                    .setDataType(new AbstractMap.SimpleEntry<>((String)null, "String"))
+                    .setDataType(new AbstractMap.SimpleEntry<>((String) null, "String"))
                     .setPropertyName(property.getSimpleName().toString());
         } else {
             if (!validDeclaredProperty(property)) {
@@ -250,19 +251,19 @@ class ZarcelProcessorGenerator {
         String kind = property.asType().toString().replace("[]", "");
         switch (kind) {
             case "float":
-                builder.setDataType(new AbstractMap.SimpleEntry<>((String)null, "float"));
+                builder.setDataType(new AbstractMap.SimpleEntry<>((String) null, "float"));
                 break;
             case "double":
-                builder.setDataType(new AbstractMap.SimpleEntry<>((String)null, "double"));
+                builder.setDataType(new AbstractMap.SimpleEntry<>((String) null, "double"));
                 break;
             case "int":
-                builder.setDataType(new AbstractMap.SimpleEntry<>((String)null, "int"));
+                builder.setDataType(new AbstractMap.SimpleEntry<>((String) null, "int"));
                 break;
             case "boolean":
-                builder.setDataType(new AbstractMap.SimpleEntry<>((String)null, "boolean"));
+                builder.setDataType(new AbstractMap.SimpleEntry<>((String) null, "boolean"));
                 break;
             case "long":
-                builder.setDataType(new AbstractMap.SimpleEntry<>((String)null, "long"));
+                builder.setDataType(new AbstractMap.SimpleEntry<>((String) null, "long"));
                 break;
         }
     }
@@ -276,7 +277,7 @@ class ZarcelProcessorGenerator {
 
         if (objectName.equals("String")) {
             builder.setType(ZarcelProperty.Type.PRIMITIVE_ARRAY)
-                    .setDataType(new AbstractMap.SimpleEntry<>((String)null, "String"))
+                    .setDataType(new AbstractMap.SimpleEntry<>((String) null, "String"))
                     .setPropertyName(property.getSimpleName().toString());
         } else {
             if (!validDeclaredProperty(property)) {
@@ -305,9 +306,6 @@ class ZarcelProcessorGenerator {
         Zarcel.Property annotationProperty = property.getAnnotation(Zarcel.Property.class);
         if (annotationProperty != null) {
             builder.setVersion(annotationProperty.sinceVersion());
-            if (annotationProperty.arraySize() > 0) {
-                builder.setArraySize(annotationProperty.arraySize());
-            }
         }
 
         Zarcel.Custom annotationAbstract = property.getAnnotation(Zarcel.Custom.class);
@@ -363,7 +361,7 @@ class ZarcelProcessorGenerator {
                     }
 
                     // Build and return
-                    builder.setCustomAdapter(true);
+                    //builder.setCustomAdapter(true);
                     isCustomProperty = true;
                     builder.setPropertyName(simpleName);
                     builder.setType(ZarcelProperty.Type.CUSTOM_ADAPTER);

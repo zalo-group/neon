@@ -5,8 +5,8 @@ Zarcel là java preprocessor library. Zarcel sử dụng annotation để xử l
 ## Usage
 
 <pre>
-implementation 'com.zing.zalo:zarcel-annotations:0.2.0'
-annotationProcessor 'com.zing.zalo:zarcel-processor:0.2.0'
+implementation 'com.zing.zalo:zarcel-annotations:0.4.0'
+annotationProcessor 'com.zing.zalo:zarcel-processor:0.4.0'
 </pre>
 
 hoặc
@@ -88,7 +88,7 @@ Khi thêm một thuộc tính vào class, chúng ta cần đảm bảo rằng nh
 
 Khai báo: 
 ```java 
-@Zarcel(version=1)
+@Zarcel(version=1, compatibleSince=1)
 public class Example implements Serializable {
    
    public int base;
@@ -101,6 +101,7 @@ public class Example implements Serializable {
 ```
 
 Như ví dụ trên, để khai báo version của class, ta sử dụng @Zarcel(version=1), để biết một property xuất hiện từ version nào, ta sử dụng @Zarcel.Property(sinceVersion=1).<br>
+Để ngưng hỗ trợ các version cũ, ta thêm @Zarcel(compatibleSince=1). Khi đó các binary có version < 1 sẽ báo lỗi nếu sử dụng.<br>
 Mặc định version = 0, sinceVersion=0. Ngoài ra, sinceVersion không được lớn hơn version.<br>
 <b>Quan trọng:</b> Việc quản lý version chỉ áp dụng khi thêm thuộc tính vào class. Việc xóa tên thuộc tính có thể dẫn đến những dữ liệu của version cũ hoạt động sai.
 
@@ -194,7 +195,7 @@ Một adapter <b>bắt buộc</b> implements <i>ZarcelAdapter</i>. Tham số ch�
 ## Một số adapter có sẵn
 
 <pre> 
-implementation 'com.zing.zalo:zarcel-utils:0.2.0'
+implementation 'com.zing.zalo:zarcel-utils:0.4.0'
 </pre>
 
 ### ZarcelDateAdapter 

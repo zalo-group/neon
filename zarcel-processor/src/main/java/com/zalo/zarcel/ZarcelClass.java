@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import javax.annotation.processing.Filer;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
 
 @AutoValue
 public abstract class ZarcelClass {

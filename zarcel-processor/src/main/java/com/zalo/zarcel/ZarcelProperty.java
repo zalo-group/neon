@@ -3,17 +3,16 @@ package com.zalo.zarcel;
 import com.google.auto.value.AutoValue;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 
 @AutoValue
 public abstract class ZarcelProperty {
 
     @Nonnull
-    public abstract Type type();
+    abstract Type type();
 
     @Nonnull
-    public abstract String propertyName();
+    abstract String propertyName();
 
     /**
      * Nếu một object phụ thuộc vào type, thì object sẽ là abstract class.
@@ -29,56 +28,38 @@ public abstract class ZarcelProperty {
      * @return DataType chứa key là package, value là tên Class.
      */
     @Nonnull
-    public abstract Map.Entry<String, String> dataType();
+    abstract Map.Entry<String, String> dataType();
 
-    /**
-     * Khai báo kích thước mảng. Nếu kích thước mảng không biết,
-     * Serialize có dạng "true","size", "element_1", ... , "element_n"
-     */
-    @Nullable
-    @Deprecated
-    abstract Integer arraySize();
+    abstract int version();
 
-    public abstract int version();
+    abstract boolean objectNullable();
 
-    public abstract boolean objectNullable();
-
-    @Deprecated
-    public abstract boolean customAdapter();
-
-    public static ZarcelProperty.Builder builder() {
+    static ZarcelProperty.Builder builder() {
         return new com.zalo.zarcel.AutoValue_ZarcelProperty.Builder()
                 .setVersion(0)
-                .setObjectNullable(true)
-                .setCustomAdapter(false);
+                .setObjectNullable(true);
     }
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder setType(Type type);
+        abstract Builder setType(Type type);
 
-        public abstract Builder setDataType(Map.Entry<String, String> dataType);
+        abstract Builder setDataType(Map.Entry<String, String> dataType);
 
-        public abstract Builder setPropertyName(String propertyName);
+        abstract Builder setPropertyName(String propertyName);
 
-        @Deprecated
-        public abstract Builder setArraySize(Integer arraySize);
-
-        public abstract ZarcelArrayList.Builder<Map.Entry<Map.Entry<String, String>, Integer>> conditionalPropertiesBuilder();
+        abstract ZarcelArrayList.Builder<Map.Entry<Map.Entry<String, String>, Integer>> conditionalPropertiesBuilder();
 
         public Builder addConditionalProperty(Map.Entry<Map.Entry<String, String>, Integer> property) {
             conditionalPropertiesBuilder().add(property);
             return this;
         }
 
-        public abstract Builder setVersion(int version);
+        abstract Builder setVersion(int version);
 
-        public abstract Builder setObjectNullable(boolean objectNullable);
+        abstract Builder setObjectNullable(boolean objectNullable);
 
-        @Deprecated
-        public abstract Builder setCustomAdapter(boolean isCustomAdapter);
-
-        public abstract ZarcelProperty build();
+        abstract ZarcelProperty build();
 
     }
 

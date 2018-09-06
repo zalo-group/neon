@@ -1,9 +1,7 @@
-package com.zalo.zarcel.processor;
+package com.zalo.zarcel;
 
-import com.zing.zalo.exception.ZarcelException;
 import com.zing.zalo.annotations.Zarcel;
-import com.zalo.zarcel.ZarcelClass;
-import com.zalo.zarcel.ZarcelProperty;
+import com.zing.zalo.exception.ZarcelException;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;

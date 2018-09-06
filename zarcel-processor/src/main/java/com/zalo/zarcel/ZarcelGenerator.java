@@ -220,7 +220,7 @@ class ZarcelGenerator {
                 property = data.properties().get(i);
                 if (property.version() > propertyVersion) {
                     propertyVersion++;
-                    if (propertyVersion > data.version()) continue;
+                    if (property.version() > propertyVersion) continue;
                     builder.nextControlFlow("if (version>=$L)", propertyVersion);
                 }
                 // Deserialize with property.

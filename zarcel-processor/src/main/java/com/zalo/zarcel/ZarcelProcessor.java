@@ -1,7 +1,7 @@
-package com.zalo.zarcel.processor;
+package com.zalo.zarcel;
 
-import com.zing.zalo.exception.ZarcelException;
 import com.zing.zalo.annotations.Zarcel;
+import com.zing.zalo.exception.ZarcelException;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -18,7 +18,6 @@ public class ZarcelProcessor extends AbstractProcessor {
     private Filer filer;
     private Messager messager;
     private Elements elements;
-    private Map<String, String> activitiesWithPackage;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -26,7 +25,6 @@ public class ZarcelProcessor extends AbstractProcessor {
         filer = processingEnvironment.getFiler();
         messager = processingEnvironment.getMessager();
         elements = processingEnvironment.getElementUtils();
-        activitiesWithPackage = new HashMap<>();
     }
 
     @Override

@@ -36,12 +36,14 @@ public abstract class ZarcelProperty {
      * Serialize có dạng "true","size", "element_1", ... , "element_n"
      */
     @Nullable
+    @Deprecated
     abstract Integer arraySize();
 
     public abstract int version();
 
     public abstract boolean objectNullable();
 
+    @Deprecated
     public abstract boolean customAdapter();
 
     public static ZarcelProperty.Builder builder() {
@@ -59,6 +61,7 @@ public abstract class ZarcelProperty {
 
         public abstract Builder setPropertyName(String propertyName);
 
+        @Deprecated
         public abstract Builder setArraySize(Integer arraySize);
 
         public abstract ZarcelArrayList.Builder<Map.Entry<Map.Entry<String, String>, Integer>> conditionalPropertiesBuilder();
@@ -72,6 +75,7 @@ public abstract class ZarcelProperty {
 
         public abstract Builder setObjectNullable(boolean objectNullable);
 
+        @Deprecated
         public abstract Builder setCustomAdapter(boolean isCustomAdapter);
 
         public abstract ZarcelProperty build();

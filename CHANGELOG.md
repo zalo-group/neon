@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+Zarcel v0.5.0 *(2018-10-05)*
+----------------------------
+* Support migrator annotations.
+
 Zarcel v0.4.0 *(2018-09-06)*
 ----------------------------
 * Support compatibleSince.

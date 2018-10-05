@@ -24,7 +24,7 @@ public class ZarcelCat extends ZarcelAnimal implements Serializable {
         public ZarcelCat createFromSerialized(SerializedInput input) {
             try {
                 ZarcelCat result = new ZarcelCat();
-                com.zalo.zing.customadapter.ZarcelCat__Zarcel.createFromSerialized(result, input);
+                ZarcelCat__Zarcel.createFromSerialized(result, input);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

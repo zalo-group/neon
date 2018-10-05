@@ -1,6 +1,7 @@
 package com.zalo.zarcel;
 
 import com.google.auto.value.AutoValue;
+import com.squareup.javapoet.ClassName;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,6 +34,9 @@ public abstract class ZarcelClass {
 
 
     public abstract int compatibleSince();
+
+    @Nullable
+    public abstract ClassName migrateClass();
 
     public static Builder builder() {
         return new com.zalo.zarcel.AutoValue_ZarcelClass.Builder()
@@ -75,6 +79,8 @@ public abstract class ZarcelClass {
             deserializeExceptionBuilder().add(exceptionClass);
             return this;
         }
+
+        public abstract Builder setMigrateClass(ClassName migrateClass);
 
         public abstract ZarcelClass build();
     }

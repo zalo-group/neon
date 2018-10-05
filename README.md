@@ -128,6 +128,32 @@ Sử dụng @NonNull hoặc @NotNull cho một thuộc tính không được ph�
 
 Sử dụng @Deprecated thông báo về một thuộc tính không nên sử dụng nữa. Tuy nhiên, Zarcel vẫn sẽ đọc và ghi thuộc tính này.
 
+## Migrator annotation
+
+Sử dụng để thay đổi giá trị của object sau khi để deserialized. Ví dụ: Thay đổi giá trị mặc định của một thuộc tính nếu như version < MIN_VERSION.
+
+```java
+ @Zarcel(version = 4)
+ @Migrator(ColorMigrator.class)
+ public class ZColor implements Serializable {
+     int color = Color.TRANSPARENT;
+ }
+ ```
+ 
+ ```java
+  public class ColorMigrator implements ZarcelMigrator<ZColor> {
+    @Override
+    void migrate(ZColor object, int fromVersion, int toVersion) {
+        if (fromVersion <= 3) {
+            // Sample code
+            object.color = Color.TRANSPARENT;
+        }
+    }    
+  }
+  ```
+  
+  <b>Note:</b> Zarcel chỉ gọi Migrator khi class này <b>implement</b> ZarcelMigrator<? extends Serializable>
+
 ## Custom Adapter
 
 Phần này sẽ hướng dẫn sử dụng một adapter tùy biến, được sử dụng để serialize và deserialize một kiểu dữ liệu tùy chỉnh, không thể sử dụng Zarcel Object.

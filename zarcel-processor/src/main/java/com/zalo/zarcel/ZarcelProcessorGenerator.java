@@ -1,7 +1,10 @@
 package com.zalo.zarcel;
 
+import com.squareup.javapoet.ClassName;
+import com.zing.zalo.annotations.Migrator;
 import com.zing.zalo.annotations.Zarcel;
 import com.zing.zalo.exception.ZarcelException;
+import com.zing.zalo.zarcel.ZarcelMigrator;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -24,7 +27,7 @@ class ZarcelProcessorGenerator {
     private static final byte CONDITIONAL_OBJECT_ARRAY = 2;
 
     private static final String ZARCEL_CUSTOM_ADAPTER_NAME = Zarcel.Custom.class.getCanonicalName();
-
+    private static final String MIGRATOR_NAME = Migrator.class.getCanonicalName();
     private TypeElement type;
     private Elements elements;
     private Messager messager;
@@ -79,6 +82,40 @@ class ZarcelProcessorGenerator {
                                     elements.getPackageOf(superClassElement).toString(),
                                     elements.getTypeElement(superClass).getSimpleName().toString());
                     classBuilder.setParentClass(parentClass);
+                }
+            }
+        }
+
+        // Migrate
+        Migrator migratorAnnotation = type.getAnnotation(Migrator.class);
+        if (migratorAnnotation != null) {
+            List<? extends AnnotationMirror> annotationMirrors = type.getAnnotationMirrors();
+            for (AnnotationMirror annotationMirror : annotationMirrors) {
+                if (!annotationMirror.getAnnotationType().toString().equals(MIGRATOR_NAME))
+                    continue;
+                Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = annotationMirror.getElementValues();
+                for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : elementValues.entrySet()) {
+                    String key = entry.getKey().getSimpleName().toString();
+                    Object value = entry.getValue().getValue();
+                    if (key.equals("value")) {
+                        TypeElement typeOfClass = elements.getTypeElement(((DeclaredType) value).asElement().toString());
+                        boolean implementZarcelMigrator = false;
+                        List<? extends TypeMirror> interfaces = typeOfClass.getInterfaces();
+                        for (TypeMirror each : interfaces) {
+                            if (each.getKind() == TypeKind.DECLARED) {
+                                if (((DeclaredType) each).asElement().toString().equals(ZarcelMigrator.class.getName())) {
+                                    implementZarcelMigrator = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (implementZarcelMigrator)
+                            classBuilder.setMigrateClass(ClassName.get(typeOfClass));
+                        else {
+                            messager.printMessage(Diagnostic.Kind.ERROR,
+                                    ((DeclaredType) value).asElement().getSimpleName() + " does not implement ZarcelMigrator (" + type.getQualifiedName() + ")");
+                        }
+                    }
                 }
             }
         }

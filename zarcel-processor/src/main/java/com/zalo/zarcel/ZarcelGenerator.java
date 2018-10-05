@@ -42,6 +42,10 @@ class ZarcelGenerator {
                     return o1.version() - o2.version();
                 }
             });
+        // Check migrator
+        if (data.migrateClass() != null) {
+            int i = 5;
+        }
     }
 
     public void generateFile(@Nonnull ZarcelClass data, Filer filer) throws IOException {
@@ -304,7 +308,9 @@ class ZarcelGenerator {
             }
         }
         builder.endControlFlow();
-
+        if (data.migrateClass() != null) {
+            builder.addStatement("new $T().migrate($L,version,$L)", data.migrateClass(), argClassName, data.version());
+        }
         for (Map.Entry<String, String> exception : data.deserializeException()) {
             builder.addException(ClassName.get(exception.getKey(), exception.getValue()));
         }

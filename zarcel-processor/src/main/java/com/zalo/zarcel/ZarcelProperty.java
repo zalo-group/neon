@@ -35,7 +35,7 @@ public abstract class ZarcelProperty {
     abstract boolean objectNullable();
 
     static ZarcelProperty.Builder builder() {
-        return new com.zalo.zarcel.AutoValue_ZarcelProperty.Builder()
+        return new AutoValue_ZarcelProperty.Builder()
                 .setVersion(0)
                 .setObjectNullable(true);
     }

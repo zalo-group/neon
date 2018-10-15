@@ -1,11 +1,13 @@
 package com.zing.zalo.data.serialization;
 
-public class ErrorBuilder {
+import java.text.MessageFormat;
+
+public class DebugBuilder {
     private int mNestedObject;
     private String mIndentString;
     private StringBuilder mBuilder;
 
-    public ErrorBuilder(int indent) {
+    public DebugBuilder(int indent) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < indent; i++)
             builder.append(" ");

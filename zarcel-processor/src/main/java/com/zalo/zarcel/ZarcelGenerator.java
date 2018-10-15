@@ -4,7 +4,8 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import com.zing.zalo.data.serialization.Serializable;
+import com.zing.zalo.data.serialization.SerializedInput;
+import com.zing.zalo.data.serialization.SerializedOutput;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Filer;
@@ -18,8 +19,6 @@ import static javax.lang.model.element.Modifier.STATIC;
 class ZarcelGenerator {
 
     private static final String ZARCEL_SUFFIX = "__Zarcel";
-    private static final String SERIALIZATION_PACKAGE = "com.zing.zalo.data.serialization";
-
     private String argClass, argPackage, argClassName;
     private boolean hasProperty = true;
 
@@ -70,7 +69,7 @@ class ZarcelGenerator {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("serialize")
                 .addModifiers(STATIC)
                 .addParameter(ClassName.get(argPackage, argClass), argClassName)
-                .addParameter(ClassName.get(SERIALIZATION_PACKAGE, "SerializedOutput"), "writer")
+                .addParameter(ClassName.get(SerializedOutput.class), "writer")
                 .returns(void.class);
 
         builder.addCode("//------------ $L version------------//\n", data.name());
@@ -86,39 +85,39 @@ class ZarcelGenerator {
             if (data.properties().get(data.properties().size() - 1).version() > data.version()) {
                 throw new IllegalArgumentException("Zarcel.Property has version larger than class version " + data.name());
             }
-        }
 
-        if (hasProperty) {
-            int propertyVersion = data.properties().get(0).version();
-            builder.addCode("//========================== Version $L ==========================//\n", propertyVersion);
-            for (ZarcelProperty property : data.properties()) {
-                if (property.version() > propertyVersion) {
-                    builder.addCode("//===============================================================//\n");
-                    builder.addCode("//========================== Version $L ==========================//\n", property.version());
-                    propertyVersion = property.version();
+            int i = 0;
+            for (int propertyVersion = 0; propertyVersion <= data.version(); propertyVersion++) {
+                builder.addCode("//========================== Version $L ==========================//\n", propertyVersion);
+                while (i < data.properties().size()) {
+                    ZarcelProperty property = data.properties().get(i);
+                    if (property.version() > propertyVersion) {
+                        break;
+                    }
+                    builder.addCode("//------------ $L ------------//\n", property.propertyName());
+                    switch (property.type()) {
+                        case OBJECT:
+                            SerializableHelper.writeObject(builder, argClassName, property.propertyName(), property.objectNullable());
+                            break;
+                        case PRIMITIVE:
+                            String primitiveType = property.dataType().getValue();
+                            SerializableHelper.writePrimitive(builder, primitiveType, argClassName, property.propertyName());
+                            break;
+                        case OBJECT_ARRAY:
+                            SerializableHelper.writeObjectArray(builder, property, argClassName);
+                            break;
+                        case PRIMITIVE_ARRAY:
+                            SerializableHelper.writePrimitiveArray(builder, property, argClassName);
+                            break;
+                        case CUSTOM_ADAPTER:
+                            SerializableHelper.writeCustomAdapter(builder, property, argClassName);
+                            break;
+                    }
+                    i++;
                 }
-                builder.addCode("//------------ $L ------------//\n", property.propertyName());
-                switch (property.type()) {
-                    case OBJECT:
-                        SerializableHelper.writeObject(builder, argClassName, property.propertyName(), property.objectNullable());
-                        break;
-                    case PRIMITIVE:
-                        String primitiveType = property.dataType().getValue();
-                        SerializableHelper.writePrimitive(builder, primitiveType, argClassName, property.propertyName());
-                        break;
-                    case OBJECT_ARRAY:
-                        SerializableHelper.writeObjectArray(builder, property, argClassName);
-                        break;
-                    case PRIMITIVE_ARRAY:
-                        SerializableHelper.writePrimitiveArray(builder, property, argClassName);
-                        break;
-                    case CUSTOM_ADAPTER:
-                        SerializableHelper.writeCustomAdapter(builder, property, argClassName);
-                        break;
-                }
+                builder.addCode("//===============================================================//\n");
             }
         }
-        builder.addCode("//===============================================================//\n");
 
         for (Map.Entry<String, String> exception : data.serializeException()) {
             builder.addException(ClassName.get(exception.getKey(), exception.getValue()));
@@ -131,7 +130,7 @@ class ZarcelGenerator {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("createFromSerialized")
                 .addModifiers(STATIC)
                 .addParameter(ClassName.get(argPackage, argClass), argClassName)
-                .addParameter(ClassName.get(SERIALIZATION_PACKAGE, "SerializedInput"), "reader")
+                .addParameter(ClassName.get(SerializedInput.class), "reader")
                 .returns(void.class);
 
         // Check version
@@ -150,16 +149,15 @@ class ZarcelGenerator {
             );
         }
 
-        int propertyVersion = 0, i = 0;
-        builder.beginControlFlow("if (version>=$L)", propertyVersion);
-        while (hasProperty && propertyVersion <= data.version()) {
-            ZarcelProperty property;
-            if (i < data.properties().size()) {
-                property = data.properties().get(i);
+        int i = 0;
+        for (int propertyVersion = 0; propertyVersion <= data.version(); propertyVersion++) {
+            // Check version
+            builder.beginControlFlow("if (version>=$L)", propertyVersion);
+            // iterator on this
+            while (i < data.properties().size()) {
+                ZarcelProperty property = data.properties().get(i);
                 if (property.version() > propertyVersion) {
-                    propertyVersion++;
-                    if (property.version() > propertyVersion) continue;
-                    builder.nextControlFlow("if (version>=$L)", propertyVersion);
+                    break;
                 }
                 switch (property.type()) {
                     case PRIMITIVE:
@@ -180,14 +178,11 @@ class ZarcelGenerator {
                         break;
                 }
                 i++;
-            } else {
-                propertyVersion++;
-                if (propertyVersion <= data.version()) {
-                    builder.nextControlFlow("if (version>=$L)", propertyVersion);
-                }
             }
+            // End check version
+            builder.endControlFlow();
         }
-        builder.endControlFlow();
+
         if (data.migrateClass() != null) {
             builder.addStatement("new $T().migrate($L,version,$L)", data.migrateClass(), argClassName, data.version());
         }

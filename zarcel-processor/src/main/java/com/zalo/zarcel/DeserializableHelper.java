@@ -53,10 +53,10 @@ public class DeserializableHelper {
         if (debug)
             builder.addStatement("builder.addObject(\"$L\")", attribute);
         if (!nullableObject) {
-            builder.addStatement("$L.$L = $T.CREATOR.createFromSerialized(reader,builder)", argClassName, attribute, object);
+            builder.addStatement("$L.$L = $T.CREATOR.createFromSerialized(reader,$L)", argClassName, attribute, object, debug ? "builder" : "null");
         } else {
             builder.beginControlFlow("if (reader.readBool())");
-            builder.addStatement("$L.$L = $T.CREATOR.createFromSerialized(reader,builder)", argClassName, attribute, object)
+            builder.addStatement("$L.$L = $T.CREATOR.createFromSerialized(reader,$L)", argClassName, attribute, object, debug ? "builder" : "null")
                     .nextControlFlow("else");
             if (debug)
                 builder.addStatement("builder.endNullObject()");
@@ -80,34 +80,48 @@ public class DeserializableHelper {
 
         if (debug) {
             builder.addStatement("builder.addObject(\"$L\")", propertyName);
-            builder.addStatement("builder.beginObject(\"$L\")", "CustomAdapter -> " + adapterClassName);
         }
         if (!property.objectNullable()) {
             builder.beginControlFlow("");
+            if (debug) {
+                builder.addStatement("builder.beginObject(\"$L\")", "CustomAdapter -> " + adapterClassName);
+            }
             builder.addStatement("$T tmp__customAdapter = new $T()", adapterClass, adapterClass);
             builder.addStatement("$L.$L = tmp__customAdapter.createFromSerialized(reader,builder)", argClassName, propertyName);
+            if (debug) {
+                builder.addStatement("builder.endObject()");
+            }
             builder.endControlFlow();
         } else {
-            builder.beginControlFlow("if (reader.readBool())")
-                    .addStatement("$T tmp_customAdapter = new $T()", adapterClass, adapterClass);
+            builder.beginControlFlow("if (reader.readBool())");
+            if (debug) {
+                builder.addStatement("builder.beginObject(\"$L\")", "CustomAdapter -> " + adapterClassName);
+            }
+            builder.addStatement("$T tmp_customAdapter = new $T()", adapterClass, adapterClass);
             builder.addStatement("$L.$L = tmp_customAdapter.createFromSerialized(reader,builder)", argClassName, propertyName);
+            if (debug) {
+                builder.addStatement("builder.endObject()");
+            }
+            builder.nextControlFlow("else");
+            if (debug)
+                builder.addStatement("builder.endNullObject()");
             builder.endControlFlow();
-        }
-        if (debug) {
-            builder.addStatement("builder.endObject()");
         }
     }
 
     private static void beginArray(MethodSpec.Builder builder, ZarcelProperty property, String argClassName, boolean arrayNullable, boolean debug) {
         String propertyName = property.propertyName();
         ClassName object = null;
+        String objectSimpleName = "";
 
-        if (property.type() != ZarcelProperty.Type.PRIMITIVE && property.type() != ZarcelProperty.Type.PRIMITIVE_ARRAY)
+        if (property.type() != ZarcelProperty.Type.PRIMITIVE && property.type() != ZarcelProperty.Type.PRIMITIVE_ARRAY) {
             object = ClassName.get(property.dataType().getKey(), property.dataType().getValue());
+            objectSimpleName = property.dataType().getValue();
+        }
 
         if (debug) {
             builder.addStatement("builder.addType(\"$L\",\"$L\")", propertyName,
-                    (object != null ? object : property.dataType().getValue()) + "[]");
+                    (object != null ? objectSimpleName : property.dataType().getValue()) + "[]");
         }
 
         if (arrayNullable) {

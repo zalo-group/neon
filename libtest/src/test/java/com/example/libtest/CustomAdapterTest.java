@@ -1,36 +1,42 @@
 package com.example.libtest;
 
-import com.zalo.zing.abstractAdapter.*;
+import com.zalo.zing.abstractAdapter.ZarcelAbstract;
+import com.zalo.zing.abstractAdapter.ZarcelCar;
 import com.zalo.zing.customadapter.ZarcelCustomAnimal;
-import com.zing.zalo.data.serialization.SerializedByteArrayInput;
-import com.zing.zalo.data.serialization.SerializedByteArrayOutput;
+import com.zalo.zing.object.ZarcelObject;
+import com.zing.zalo.data.serialization.SerializableHelper;
+import com.zing.zalo.data.serialization.SerializedByteBufferInput;
+import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Test;
+
+import java.util.Map;
 
 public class CustomAdapterTest extends BaseTest {
     @Test
-    public void customAdapter() {
+    public void customAdapter() throws Exception {
         ZarcelCustomAnimal origin = new ZarcelCustomAnimal();
         setZarcelCustomAnimal(origin);
-
-        SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
+        SerializedByteBufferOutput writer = new SerializedByteBufferOutput(2000000);
         origin.serialize(writer);
-        ZarcelCustomAnimal result =
-                ZarcelCustomAnimal.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
-        assertZarcelCustomAnimal(origin, result);
+        SerializableHelper<ZarcelCustomAnimal> helper = new SerializableHelper<>();
+        SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
+        Map.Entry<ZarcelCustomAnimal, String> log = helper.deserialize(input, ZarcelCustomAnimal.CREATOR, true);
+        System.out.println(log.getValue());
+        assertZarcelCustomAnimal(origin, log.getKey());
     }
 
     @Test
-    public void abstractAdapter() {
+    public void abstractAdapter() throws Exception {
         ZarcelAbstract origin = new ZarcelAbstract();
         origin.vehicle = new ZarcelCar();
         ((ZarcelCar) origin.vehicle).numberOfSeat = 100;
         ((ZarcelCar) origin.vehicle).maxSpeed = 50;
-        //origin.vehicle.mType = ZarcelVehicle.CAR;
-
-        SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
+        SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         origin.serialize(writer);
-        ZarcelAbstract result =
-                ZarcelAbstract.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
-        assertZarcelVehicle(origin.vehicle, result.vehicle);
+        SerializableHelper<ZarcelAbstract> helper = new SerializableHelper<>();
+        SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
+        Map.Entry<ZarcelAbstract, String> log = helper.deserialize(input, ZarcelAbstract.CREATOR, true);
+        System.out.println(log.getValue());
+        assertZarcelVehicle(origin.vehicle, log.getKey().vehicle);
     }
 }

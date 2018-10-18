@@ -1,13 +1,14 @@
 package com.example.libtest;
 
 import com.zalo.zing.customadapter.Human;
-import com.zing.zalo.data.serialization.SerializedByteArrayInput;
-import com.zing.zalo.data.serialization.SerializedByteArrayOutput;
+import com.zing.zalo.data.serialization.SerializedByteBufferInput;
+import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Test;
 
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class HumanTest extends BaseTest {
 
@@ -42,9 +43,9 @@ public class HumanTest extends BaseTest {
                 createHuman("Con 2", 20, new Date(3000),
                         createHuman("Con 21", 30, new Date(5000))));
 
-        SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
+        SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         human1.serialize(writer);
-        Human human2 = Human.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
+        Human human2 = Human.CREATOR.createFromSerialized(new SerializedByteBufferInput(writer.toByteArray()),null);
         assertHuman(human1, human2);
     }
 
@@ -55,9 +56,9 @@ public class HumanTest extends BaseTest {
         cha.children = new Human[]{con};
         con.father = cha;
 
-        SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
+        SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         cha.serialize(writer);
-        Human result = Human.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
+        Human result = Human.CREATOR.createFromSerialized(new SerializedByteBufferInput(writer.toByteArray()),null);
         assertHuman(cha, result);
     }
 }

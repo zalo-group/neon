@@ -1,9 +1,8 @@
 package com.example.libtest;
 
 import com.zalo.zing.migrate.MigratorClass;
-import com.zalo.zing.primitive.ZarcelPrimitive;
-import com.zing.zalo.data.serialization.SerializedByteArrayInput;
-import com.zing.zalo.data.serialization.SerializedByteArrayOutput;
+import com.zing.zalo.data.serialization.SerializedByteBufferInput;
+import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,11 +11,11 @@ public class MigratorTest extends BaseTest {
     public void migrator() {
         MigratorClass origin = new MigratorClass();
         origin.color = 100;
-        SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
+        SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         origin.serialize(writer);
         // Migrator set color = MAX_VALUE
         MigratorClass result =
-                MigratorClass.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
+                MigratorClass.CREATOR.createFromSerialized(new SerializedByteBufferInput(writer.toByteArray()),null);
         Assert.assertEquals(Integer.MAX_VALUE, result.color);
     }
 }

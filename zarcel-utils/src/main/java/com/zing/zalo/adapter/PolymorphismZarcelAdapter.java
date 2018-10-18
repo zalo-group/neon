@@ -76,7 +76,7 @@ public abstract class PolymorphismZarcelAdapter<T> implements ZarcelAdapter<T> {
 
         int type = reader.readInt32();
         if (builder != null)
-            builder.addType("type", "int");
+            builder.addType("type", String.valueOf(type));
         for (Map.Entry<Integer, Class> child : children.entrySet()) {
             if (child.getKey() == type) {
                 if (builder != null)

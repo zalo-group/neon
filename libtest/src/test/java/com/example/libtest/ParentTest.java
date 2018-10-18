@@ -2,31 +2,38 @@ package com.example.libtest;
 
 import com.zalo.zing.extendClass.ZarcelChild;
 import com.zalo.zing.extendClass.ZarcelParent;
-import com.zing.zalo.data.serialization.SerializedByteArrayInput;
-import com.zing.zalo.data.serialization.SerializedByteArrayOutput;
+import com.zing.zalo.data.serialization.SerializableHelper;
+import com.zing.zalo.data.serialization.SerializedByteBufferInput;
+import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Test;
+
+import java.util.Map;
 
 public class ParentTest extends BaseTest {
     @Test
-    public void parent() {
+    public void parent() throws Exception {
         ZarcelParent origin = new ZarcelParent();
         setZarcelRoot(origin);
 
-        SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
+        SerializedByteBufferOutput writer = new SerializedByteBufferOutput(2000000);
         origin.serialize(writer);
-        ZarcelParent result =
-                ZarcelParent.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
-        assertZarcelRoot(origin, result);
+        SerializableHelper<ZarcelParent> helper = new SerializableHelper<>();
+        SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
+        Map.Entry<ZarcelParent, String> log = helper.deserialize(input, ZarcelParent.CREATOR, true);
+        System.out.println(log.getValue());
+        assertZarcelRoot(origin, log.getKey());
     }
 
     @Test
-    public void child() {
+    public void child() throws Exception {
         ZarcelChild origin = new ZarcelChild();
         setZarcelChild(origin);
-        SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
+        SerializedByteBufferOutput writer = new SerializedByteBufferOutput(2000000);
         origin.serialize(writer);
-        ZarcelChild result =
-                ZarcelChild.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
-        assertZarcelChild(origin, result);
+        SerializableHelper<ZarcelChild> helper = new SerializableHelper<>();
+        SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
+        Map.Entry<ZarcelChild, String> log = helper.deserialize(input, ZarcelChild.CREATOR, true);
+        System.out.println(log.getValue());
+        assertZarcelChild(origin, log.getKey());
     }
 }

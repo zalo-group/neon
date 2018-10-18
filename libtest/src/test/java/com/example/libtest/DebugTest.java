@@ -1,9 +1,10 @@
 package com.example.libtest;
 
-import android.util.Log;
 import com.zalo.zing.customadapter.ZarcelPig;
 import com.zalo.zing.extendClass.ZarcelChild;
-import com.zing.zalo.data.serialization.*;
+import com.zing.zalo.data.serialization.SerializableHelper;
+import com.zing.zalo.data.serialization.SerializedByteBufferInput;
+import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,12 +17,12 @@ public class DebugTest extends BaseTest {
     public void debugTest() {
         ZarcelChild origin = new ZarcelChild();
         setZarcelChild(origin);
-        SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
+        SerializedByteBufferOutput writer = new SerializedByteBufferOutput(2000000);
         origin.serialize(writer);
-        SerializableHelper<ZarcelChild> helper = new SerializableHelper();
+        SerializableHelper<ZarcelChild> helper = new SerializableHelper<>();
         Map.Entry<ZarcelChild, String> result = null;
         try {
-            result = helper.deserialize(new SerializedByteArrayInput(writer.toByteArray()), ZarcelChild.CREATOR, true);
+            result = helper.deserialize(new SerializedByteBufferInput(writer.toByteArray()), ZarcelChild.CREATOR, true);
         } catch (Exception e) {
             Assert.fail();
         }

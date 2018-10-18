@@ -1,19 +1,24 @@
 package com.example.libtest;
 
 import com.zalo.zing.primitive.ZarcelPrimitive;
-import com.zing.zalo.data.serialization.SerializedByteArrayInput;
-import com.zing.zalo.data.serialization.SerializedByteArrayOutput;
+import com.zing.zalo.data.serialization.SerializableHelper;
+import com.zing.zalo.data.serialization.SerializedByteBufferInput;
+import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Test;
+
+import java.util.Map;
 
 public class PrimitiveTest extends BaseTest {
     @Test
-    public void primitiveTest() {
+    public void primitiveTest() throws Exception {
         ZarcelPrimitive origin = new ZarcelPrimitive();
         setZarcelPrimitiveProperty(origin);
-        SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
+        SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         origin.serialize(writer);
-        ZarcelPrimitive result =
-                ZarcelPrimitive.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
-        assertZarcelPrimitive(origin, result);
+        SerializableHelper<ZarcelPrimitive> helper = new SerializableHelper<>();
+        SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
+        Map.Entry<ZarcelPrimitive, String> log = helper.deserialize(input, ZarcelPrimitive.CREATOR, true);
+        System.out.println(log.getValue());
+        assertZarcelPrimitive(origin, log.getKey());
     }
 }

@@ -19,7 +19,7 @@ public class ObjectTest extends BaseTest {
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         origin.serialize(writer);
         ZarcelObject result =
-                ZarcelObject.CREATOR.createFromSerialized(new SerializedByteBufferInput(writer.toByteArray()));
+                ZarcelObject.CREATOR.createFromSerialized(new SerializedByteBufferInput(writer.toByteArray()),null);
         assertZarcelObject(origin, result);
     }
 

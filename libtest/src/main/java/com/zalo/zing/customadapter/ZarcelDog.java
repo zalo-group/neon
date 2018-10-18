@@ -3,6 +3,7 @@ package com.zalo.zing.customadapter;
 import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
 import com.zalo.zing.primitive.ZarcelPrimitive;
+import com.zing.zalo.data.serialization.DebugBuilder;
 import com.zing.zalo.data.serialization.Serializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
@@ -21,10 +22,10 @@ public class ZarcelDog extends ZarcelAnimal implements Serializable {
     public static Serializable.Creator<ZarcelDog> CREATOR = new Serializable.Creator<ZarcelDog>() {
         @Nullable
         @Override
-        public ZarcelDog createFromSerialized(SerializedInput input) {
+        public ZarcelDog createFromSerialized(SerializedInput input, DebugBuilder builder) {
             try {
                 ZarcelDog result = new ZarcelDog();
-                ZarcelDog__Zarcel.createFromSerialized(result, input);
+                ZarcelDog__Zarcel.createFromSerialized(result, input, builder);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

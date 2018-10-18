@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 import com.zing.zalo.adapter.DateZarcelAdapter;
 import com.zing.zalo.annotations.Ignore;
 import com.zing.zalo.annotations.Zarcel;
+import com.zing.zalo.data.serialization.DebugBuilder;
 import com.zing.zalo.data.serialization.Serializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
@@ -31,10 +32,10 @@ public class Human implements Serializable {
     public static Serializable.Creator<Human> CREATOR = new Serializable.Creator<Human>() {
         @Nullable
         @Override
-        public Human createFromSerialized(SerializedInput input) {
+        public Human createFromSerialized(SerializedInput input, DebugBuilder builder) {
             try {
                 Human result = new Human();
-                Human__Zarcel.createFromSerialized(result, input);
+                Human__Zarcel.createFromSerialized(result, input, builder);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

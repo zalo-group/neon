@@ -15,7 +15,7 @@ public class ParentTest extends BaseTest {
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         origin.serialize(writer);
         ZarcelParent result =
-                ZarcelParent.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+                ZarcelParent.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
         assertZarcelRoot(origin, result);
     }
 
@@ -26,7 +26,7 @@ public class ParentTest extends BaseTest {
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         origin.serialize(writer);
         ZarcelChild result =
-                ZarcelChild.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+                ZarcelChild.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
         assertZarcelChild(origin, result);
     }
 }

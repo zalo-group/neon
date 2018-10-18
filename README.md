@@ -43,9 +43,9 @@ public class Example implements Serializable {
 
     public static Serializable.Creator<Example> CREATOR = new Creator<Example>() {
         @Override
-        public Example createFromSerialized(SerializedInput input) {
+        public Example createFromSerialized(SerializedInput input, DebugBuilder builder) {
             Example result = new Example();
-            Example__Zarcel.createFromSerialized(result, input);
+            Example__Zarcel.createFromSerialized(result, input, builder);
             return result;
         }
     };
@@ -121,6 +121,20 @@ public class ZarcelChild extends ZarcelParent implements Serializable {
 ```
 
 Mặc định inheritanceSupported là true.
+
+## DEBUG
+Sử dụng class SerializableHelper để lấy dữ liệu debug.
+
+```java
+class Example {
+    public void sample() {
+        SerializableHelper<ZarcelSample> helper = new SerializableHelper();
+        Map.Entry<ZarcelSample, String> result = helper.deserialize(serializedInput, ZarcelSample.CREATOR, true);
+        // Print structure of object
+        Log.d(TAG, result.getValue());
+    }
+}    
+```
 
 ## Sử dụng các annotations khác.
 

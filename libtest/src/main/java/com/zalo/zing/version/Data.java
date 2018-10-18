@@ -2,6 +2,7 @@ package com.zalo.zing.version;
 
 import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
+import com.zing.zalo.data.serialization.DebugBuilder;
 import com.zing.zalo.data.serialization.Serializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
@@ -20,9 +21,9 @@ public class Data {
         public static Serializable.Creator<DataOld> CREATOR = new Serializable.Creator<DataOld>() {
             @Nullable
             @Override
-            public DataOld createFromSerialized(SerializedInput input) {
+            public DataOld createFromSerialized(SerializedInput input, DebugBuilder builder) {
                 DataOld result = new DataOld();
-                DataOld__Zarcel.createFromSerialized(result, input);
+                DataOld__Zarcel.createFromSerialized(result, input, builder);
                 return result;
             }
         };
@@ -41,9 +42,9 @@ public class Data {
         public static Serializable.Creator<DataNewest> CREATOR = new Serializable.Creator<DataNewest>() {
             @Nullable
             @Override
-            public DataNewest createFromSerialized(SerializedInput input) {
+            public DataNewest createFromSerialized(SerializedInput input, DebugBuilder builder) {
                 DataNewest result = new DataNewest();
-                DataNewest__Zarcel.createFromSerialized(result, input);
+                DataNewest__Zarcel.createFromSerialized(result, input, builder);
                 return result;
             }
         };

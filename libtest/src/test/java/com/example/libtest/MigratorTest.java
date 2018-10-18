@@ -16,7 +16,7 @@ public class MigratorTest extends BaseTest {
         origin.serialize(writer);
         // Migrator set color = MAX_VALUE
         MigratorClass result =
-                MigratorClass.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+                MigratorClass.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
         Assert.assertEquals(Integer.MAX_VALUE, result.color);
     }
 }

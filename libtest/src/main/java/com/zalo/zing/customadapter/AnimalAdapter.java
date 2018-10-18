@@ -1,6 +1,7 @@
 package com.zalo.zing.customadapter;
 
 import com.zing.zalo.adapter.ZarcelAdapter;
+import com.zing.zalo.data.serialization.DebugBuilder;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
@@ -22,17 +23,20 @@ public class AnimalAdapter implements ZarcelAdapter<ZarcelAnimal[]> {
     }
 
     @Override
-    public ZarcelAnimal[] createFromSerialized(SerializedInput reader) {
+    public ZarcelAnimal[] createFromSerialized(SerializedInput reader, DebugBuilder builder) {
         int size = reader.readInt32();
+        if (builder != null) {
+            builder.addType("array", "ZarcelAnimal[]");
+        }
         ZarcelAnimal[] result = new ZarcelAnimal[size];
         for (int i = 0; i < size; i++) {
             int type = reader.readInt32();
             if (type == ZarcelAnimal.CAT) {
-                result[i] = ZarcelCat.CREATOR.createFromSerialized(reader);
+                result[i] = ZarcelCat.CREATOR.createFromSerialized(reader, null);
             } else if (type == ZarcelAnimal.DOG) {
-                result[i] = ZarcelDog.CREATOR.createFromSerialized(reader);
+                result[i] = ZarcelDog.CREATOR.createFromSerialized(reader, null);
             } else if (type == ZarcelAnimal.PIG) {
-                result[i] = ZarcelPig.CREATOR.createFromSerialized(reader);
+                result[i] = ZarcelPig.CREATOR.createFromSerialized(reader, null);
             }
         }
         return result;

@@ -2,6 +2,7 @@ package com.zalo.zing.abstractAdapter;
 
 import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
+import com.zing.zalo.data.serialization.DebugBuilder;
 import com.zing.zalo.data.serialization.Serializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
@@ -30,10 +31,10 @@ public class ZarcelAbstract implements Serializable {
     public static Creator<ZarcelAbstract> CREATOR = new Creator<ZarcelAbstract>() {
         @Nullable
         @Override
-        public ZarcelAbstract createFromSerialized(SerializedInput input) {
+        public ZarcelAbstract createFromSerialized(SerializedInput input, DebugBuilder builder) {
             try {
                 ZarcelAbstract result = new ZarcelAbstract();
-                ZarcelAbstract__Zarcel.createFromSerialized(result, input);
+                ZarcelAbstract__Zarcel.createFromSerialized(result, input, builder);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

@@ -39,7 +39,7 @@ public abstract class ZarcelClass {
     public abstract ClassName migrateClass();
 
     public static Builder builder() {
-        return new com.zalo.zarcel.AutoValue_ZarcelClass.Builder()
+        return new AutoValue_ZarcelClass.Builder()
                 .setVersion(0)
                 .setCompatibleSince(0)
                 .setInheritanceSupported(false);

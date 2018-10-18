@@ -13,7 +13,7 @@ public class PrimitiveTest extends BaseTest {
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         origin.serialize(writer);
         ZarcelPrimitive result =
-                ZarcelPrimitive.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+                ZarcelPrimitive.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
         assertZarcelPrimitive(origin, result);
     }
 }

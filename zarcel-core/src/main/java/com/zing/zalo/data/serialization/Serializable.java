@@ -6,7 +6,8 @@ package com.zing.zalo.data.serialization;
  */
 public interface Serializable {
     void serialize(SerializedOutput output);
+
     interface Creator<T extends Serializable> {
-        T createFromSerialized(SerializedInput input);
+        T createFromSerialized(SerializedInput input, DebugBuilder builder);
     }
 }

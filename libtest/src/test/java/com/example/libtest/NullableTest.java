@@ -13,7 +13,7 @@ public class NullableTest extends BaseTest{
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         origin.serialize(writer);
         ZarcelNullable result =
-                ZarcelNullable.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+                ZarcelNullable.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
         assertZarcelNullable(origin,result);
     }
 
@@ -24,7 +24,7 @@ public class NullableTest extends BaseTest{
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         origin.serialize(writer);
         ZarcelNullable result =
-                ZarcelNullable.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+                ZarcelNullable.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
         assertZarcelNullable(origin,result);
     }
 }

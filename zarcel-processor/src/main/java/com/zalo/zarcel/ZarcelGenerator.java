@@ -4,6 +4,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import com.zing.zalo.data.serialization.DebugBuilder;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
@@ -131,10 +132,35 @@ class ZarcelGenerator {
                 .addModifiers(STATIC)
                 .addParameter(ClassName.get(argPackage, argClass), argClassName)
                 .addParameter(ClassName.get(SerializedInput.class), "reader")
+                .addParameter(ClassName.get(DebugBuilder.class), "builder")
                 .returns(void.class);
 
+        builder.addStatement("int version");
+        builder.beginControlFlow("if (builder != null)");
+        generateDeserializeWithFlag(builder, data, true);
+        builder.nextControlFlow("else");
+        generateDeserializeWithFlag(builder, data, false);
+        builder.endControlFlow();
+
+        if (data.migrateClass() != null) {
+            builder.addStatement("new $T().migrate($L,version,$L)", data.migrateClass(), argClassName, data.version());
+        }
+        for (Map.Entry<String, String> exception : data.deserializeException()) {
+            builder.addException(ClassName.get(exception.getKey(), exception.getValue()));
+        }
+
+        return builder.build();
+    }
+
+    private void generateDeserializeWithFlag(MethodSpec.Builder builder, @Nonnull ZarcelClass data, boolean debug) {
         // Check version
-        builder.addStatement("int version = reader.readInt32()");
+        if (debug) {
+            builder.addStatement("builder.beginObject(\"$L\")", data.name());
+        }
+        builder.addStatement("version = reader.readInt32()");
+        if (debug) {
+            builder.addStatement("builder.addType(\"$L\",$L)", "version", "String.valueOf(version)");
+        }
         builder.beginControlFlow("if (version>$L)", data.version())
                 .addStatement("throw new IllegalArgumentException(\"$L is outdated. Update $L to deserialize newest binary data.\")", data.name(), data.name())
                 .endControlFlow();
@@ -143,7 +169,10 @@ class ZarcelGenerator {
                 .endControlFlow();
         // Check base
         if (data.inheritanceSupported()) {
-            builder.addStatement("$T.createFromSerialized($L,reader)",
+            if (debug) {
+                builder.addStatement("builder.addObject(\"parentSerialize\")");
+            }
+            builder.addStatement("$T.createFromSerialized($L,reader,builder)",
                     ClassName.get(data.parentClass().getKey(), data.parentClass().getValue() + ZARCEL_SUFFIX),
                     argClassName
             );
@@ -162,19 +191,19 @@ class ZarcelGenerator {
                 switch (property.type()) {
                     case PRIMITIVE:
                         String primitiveType = property.dataType().getValue();
-                        DeserializableHelper.readPrimitive(builder, primitiveType, argClassName, property.propertyName());
+                        DeserializableHelper.readPrimitive(builder, primitiveType, argClassName, property.propertyName(), debug);
                         break;
                     case OBJECT:
-                        DeserializableHelper.readObject(builder, property, argClassName, property.propertyName(), property.objectNullable());
+                        DeserializableHelper.readObject(builder, property, argClassName, property.propertyName(), property.objectNullable(), debug);
                         break;
                     case PRIMITIVE_ARRAY:
-                        DeserializableHelper.readPrimitiveArray(builder, property, argClassName);
+                        DeserializableHelper.readPrimitiveArray(builder, property, argClassName, debug);
                         break;
                     case OBJECT_ARRAY:
-                        DeserializableHelper.readObjectArray(builder, property, argClassName);
+                        DeserializableHelper.readObjectArray(builder, property, argClassName, debug);
                         break;
                     case CUSTOM_ADAPTER:
-                        DeserializableHelper.readCustomAdapter(builder, property, argClassName);
+                        DeserializableHelper.readCustomAdapter(builder, property, argClassName, debug);
                         break;
                 }
                 i++;
@@ -182,15 +211,9 @@ class ZarcelGenerator {
             // End check version
             builder.endControlFlow();
         }
-
-        if (data.migrateClass() != null) {
-            builder.addStatement("new $T().migrate($L,version,$L)", data.migrateClass(), argClassName, data.version());
+        if (debug) {
+            builder.addStatement("builder.endObject()");
         }
-        for (Map.Entry<String, String> exception : data.deserializeException()) {
-            builder.addException(ClassName.get(exception.getKey(), exception.getValue()));
-        }
-
-        return builder.build();
     }
 }
 

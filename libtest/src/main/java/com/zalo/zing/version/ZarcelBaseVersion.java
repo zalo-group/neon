@@ -2,6 +2,7 @@ package com.zalo.zing.version;
 
 import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
+import com.zing.zalo.data.serialization.DebugBuilder;
 import com.zing.zalo.data.serialization.Serializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
@@ -25,9 +26,9 @@ public class ZarcelBaseVersion implements Serializable {
     public static Serializable.Creator<ZarcelBaseVersion> CREATOR = new Serializable.Creator<ZarcelBaseVersion>() {
         @Nullable
         @Override
-        public ZarcelBaseVersion createFromSerialized(SerializedInput input) {
+        public ZarcelBaseVersion createFromSerialized(SerializedInput input, DebugBuilder builder) {
             ZarcelBaseVersion result = new ZarcelBaseVersion();
-            ZarcelBaseVersion__Zarcel.createFromSerialized(result, input);
+            ZarcelBaseVersion__Zarcel.createFromSerialized(result, input, builder);
             return result;
         }
     };

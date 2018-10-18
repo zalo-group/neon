@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
 import com.zalo.zing.customadapter.AnimalAdapter;
 import com.zalo.zing.customadapter.ZarcelAnimal;
+import com.zing.zalo.data.serialization.DebugBuilder;
 import com.zing.zalo.data.serialization.Serializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
@@ -32,10 +33,10 @@ public class ZarcelParent implements Serializable {
     public static Serializable.Creator<ZarcelParent> CREATOR = new Serializable.Creator<ZarcelParent>() {
         @Nullable
         @Override
-        public ZarcelParent createFromSerialized(SerializedInput input) {
+        public ZarcelParent createFromSerialized(SerializedInput input, DebugBuilder builder) {
             try {
                 ZarcelParent result = new ZarcelParent();
-                ZarcelParent__Zarcel.createFromSerialized(result, input);
+                ZarcelParent__Zarcel.createFromSerialized(result, input, builder);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

@@ -23,7 +23,7 @@ public class VersionTest extends BaseTest {
 
         ZarcelNewVersion origin = ZarcelNewVersion.createFromBaseVersion(baseVersion);
         ZarcelNewVersion result =
-                ZarcelNewVersion.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+                ZarcelNewVersion.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
         assertZarcelVersion(origin, result);
     }
 
@@ -35,7 +35,7 @@ public class VersionTest extends BaseTest {
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         newVersion.serialize(writer);
         ZarcelBaseVersion result =
-                ZarcelBaseVersion.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+                ZarcelBaseVersion.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class VersionTest extends BaseTest {
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         old.serialize(writer);
         try {
-            Data.DataNewest newest = Data.DataNewest.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+            Data.DataNewest newest = Data.DataNewest.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals("Binary data of " + "Data.DataNewest" + " is outdated. You must re-serialize latest data.", e.getMessage());

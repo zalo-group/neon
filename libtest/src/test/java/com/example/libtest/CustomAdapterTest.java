@@ -15,7 +15,7 @@ public class CustomAdapterTest extends BaseTest {
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         origin.serialize(writer);
         ZarcelCustomAnimal result =
-                ZarcelCustomAnimal.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+                ZarcelCustomAnimal.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
         assertZarcelCustomAnimal(origin, result);
     }
 
@@ -30,7 +30,7 @@ public class CustomAdapterTest extends BaseTest {
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         origin.serialize(writer);
         ZarcelAbstract result =
-                ZarcelAbstract.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+                ZarcelAbstract.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
         assertZarcelVehicle(origin.vehicle, result.vehicle);
     }
 }

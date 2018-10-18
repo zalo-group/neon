@@ -2,6 +2,7 @@ package com.zalo.zing.abstractAdapter;
 
 import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
+import com.zing.zalo.data.serialization.DebugBuilder;
 import com.zing.zalo.data.serialization.Serializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
@@ -19,10 +20,10 @@ public class ZarcelBike extends ZarcelVehicle implements Serializable {
     public static Serializable.Creator<com.zalo.zing.abstractAdapter.ZarcelBike> CREATOR = new Serializable.Creator<com.zalo.zing.abstractAdapter.ZarcelBike>() {
         @Nullable
         @Override
-        public com.zalo.zing.abstractAdapter.ZarcelBike createFromSerialized(SerializedInput input) {
+        public com.zalo.zing.abstractAdapter.ZarcelBike createFromSerialized(SerializedInput input, DebugBuilder builder) {
             try {
                 com.zalo.zing.abstractAdapter.ZarcelBike result = new com.zalo.zing.abstractAdapter.ZarcelBike();
-                ZarcelBike__Zarcel.createFromSerialized(result, input);
+                ZarcelBike__Zarcel.createFromSerialized(result, input, builder);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

@@ -44,7 +44,7 @@ public class HumanTest extends BaseTest {
 
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         human1.serialize(writer);
-        Human human2 = Human.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+        Human human2 = Human.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
         assertHuman(human1, human2);
     }
 
@@ -57,7 +57,7 @@ public class HumanTest extends BaseTest {
 
         SerializedByteArrayOutput writer = new SerializedByteArrayOutput();
         cha.serialize(writer);
-        Human result = Human.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()));
+        Human result = Human.CREATOR.createFromSerialized(new SerializedByteArrayInput(writer.toByteArray()),null);
         assertHuman(cha, result);
     }
 }

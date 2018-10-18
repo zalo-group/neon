@@ -1,5 +1,6 @@
 package com.zing.zalo.adapter;
 
+import com.zing.zalo.data.serialization.DebugBuilder;
 import com.zing.zalo.exception.ZarcelDuplicateException;
 import com.zing.zalo.exception.ZarcelNotFoundException;
 import com.zing.zalo.exception.ZarcelRuntimeException;
@@ -70,18 +71,22 @@ public abstract class PolymorphismZarcelAdapter<T> implements ZarcelAdapter<T> {
     }
 
     @Override
-    public T createFromSerialized(SerializedInput reader) throws NoSuchFieldException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
+    public T createFromSerialized(SerializedInput reader, DebugBuilder builder) throws NoSuchFieldException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
         Method method;
 
         int type = reader.readInt32();
+        if (builder != null)
+            builder.addType("type", "int");
         for (Map.Entry<Integer, Class> child : children.entrySet()) {
             if (child.getKey() == type) {
+                if (builder != null)
+                    builder.addObject(child.getValue().getSimpleName().toLowerCase());
                 method = child.getValue().
                         getField("CREATOR")
                         .getType()
-                        .getMethod("createFromSerialized", SerializedInput.class);
+                        .getMethod("createFromSerialized", SerializedInput.class, DebugBuilder.class);
                 Object creator = child.getValue().newInstance().getClass().getDeclaredField("CREATOR");
-                T childObject = (T) method.invoke(((Field) creator).get("CREATOR"), reader);
+                T childObject = (T) method.invoke(((Field) creator).get("CREATOR"), reader, builder);
                 return childObject;
             }
         }

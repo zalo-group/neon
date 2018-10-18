@@ -1,7 +1,5 @@
 package com.zing.zalo.data.serialization;
 
-import java.text.MessageFormat;
-
 public class DebugBuilder {
     private int mNestedObject;
     private String mIndentString;
@@ -12,6 +10,7 @@ public class DebugBuilder {
         for (int i = 0; i < indent; i++)
             builder.append(" ");
         mIndentString = builder.toString();
+        mBuilder = new StringBuilder();
     }
 
     public void beginObject(String objectName) {
@@ -35,6 +34,10 @@ public class DebugBuilder {
         mBuilder.append(attrName).append(" : ");
     }
 
+    public void endNullObject() {
+        mBuilder.append("null");
+    }
+
     public void onError() {
         mBuilder.append(" <<<<<<<<<<<<");
     }
@@ -48,5 +51,10 @@ public class DebugBuilder {
         for (int i = 0; i < mNestedObject; i++) {
             mBuilder.append(mIndentString);
         }
+    }
+
+    @Override
+    public String toString() {
+        return mBuilder.toString();
     }
 }

@@ -4,6 +4,7 @@ package com.zalo.zing.migrate;
 import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Migrator;
 import com.zing.zalo.annotations.Zarcel;
+import com.zing.zalo.data.serialization.DebugBuilder;
 import com.zing.zalo.data.serialization.Serializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
@@ -21,10 +22,10 @@ public class MigratorClass implements Serializable {
     public static Serializable.Creator<MigratorClass> CREATOR = new Creator<MigratorClass>() {
         @Nullable
         @Override
-        public MigratorClass createFromSerialized(SerializedInput input) {
+        public MigratorClass createFromSerialized(SerializedInput input, DebugBuilder builder) {
             try {
                 MigratorClass result = new MigratorClass();
-                MigratorClass__Zarcel.createFromSerialized(result, input);
+                MigratorClass__Zarcel.createFromSerialized(result, input, builder);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

@@ -26,20 +26,7 @@ public class DebugTest extends BaseTest {
         } catch (Exception e) {
             Assert.fail();
         }
-
-        Assert.assertEquals("ZarcelChild {\n" +
-                "    version : 0\n" +
-                "    parentSerialize : ZarcelParent {\n" +
-                "        version : 3\n" +
-                "        x : int\n" +
-                "        y : int\n" +
-                "        z : int\n" +
-                "        animals : CustomAdapter -> AnimalAdapter {\n" +
-                "            array : ZarcelAnimal[]\n" +
-                "        }\n" +
-                "    }\n" +
-                "    daddyName : String\n" +
-                "}", result.getValue());
+        System.out.println(result.getValue());
     }
 
     @Test

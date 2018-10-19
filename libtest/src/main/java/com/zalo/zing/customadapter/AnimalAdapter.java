@@ -25,18 +25,18 @@ public class AnimalAdapter implements ZarcelAdapter<ZarcelAnimal[]> {
     @Override
     public ZarcelAnimal[] createFromSerialized(SerializedInput reader, DebugBuilder builder) {
         int size = reader.readInt32();
-        if (builder != null) {
-            builder.addType("array", "ZarcelAnimal[]");
-        }
         ZarcelAnimal[] result = new ZarcelAnimal[size];
         for (int i = 0; i < size; i++) {
             int type = reader.readInt32();
+            if (builder != null) {
+                builder.addObject("ZarcelAnimal[" + i + "]");
+            }
             if (type == ZarcelAnimal.CAT) {
-                result[i] = ZarcelCat.CREATOR.createFromSerialized(reader, null);
+                result[i] = ZarcelCat.CREATOR.createFromSerialized(reader, builder);
             } else if (type == ZarcelAnimal.DOG) {
-                result[i] = ZarcelDog.CREATOR.createFromSerialized(reader, null);
+                result[i] = ZarcelDog.CREATOR.createFromSerialized(reader, builder);
             } else if (type == ZarcelAnimal.PIG) {
-                result[i] = ZarcelPig.CREATOR.createFromSerialized(reader, null);
+                result[i] = ZarcelPig.CREATOR.createFromSerialized(reader, builder);
             }
         }
         return result;

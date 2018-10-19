@@ -3,6 +3,8 @@ package com.zalo.zarcel;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 
+import java.nio.charset.StandardCharsets;
+
 public class DeserializableHelper {
 
     private static void readPrimitiveSupport(MethodSpec.Builder builder,
@@ -15,6 +17,12 @@ public class DeserializableHelper {
             builder.addStatement("builder.addType(\"$L\",\"$L\")", attribute, primitiveType);
         }
         builder.addStatement(templateStatement, argClassName, attribute);
+        if (primitiveType.equals("String") && debug) {
+            builder.beginControlFlow("if ($L.$L != null)", argClassName, attribute);
+            builder.addStatement("builder.addByte($L.$L.getBytes($T.UTF_8).length)",
+                    argClassName, attribute, StandardCharsets.class);
+            builder.endControlFlow();
+        }
     }
 
     static void readPrimitive(MethodSpec.Builder builder, String primitiveType, String argClassName, String attribute, boolean debug) {
@@ -45,15 +53,20 @@ public class DeserializableHelper {
         //==========Process with i========
         readPrimitive(builder, property.dataType().getValue(), argClassName, property.propertyName() + "[i]", false);
         //================================
-        endArray(builder, property.objectNullable());
+        endArray(builder, property.objectNullable(), debug, false);
     }
 
-    static void readObject(MethodSpec.Builder builder, ZarcelProperty property, String argClassName, String attribute, boolean nullableObject, boolean debug) {
+    static void readObject(MethodSpec.Builder builder, ZarcelProperty property, String argClassName, String attribute, boolean nullableObject, boolean debug, boolean isArray) {
         ClassName object = ClassName.get(property.dataType().getKey(), property.dataType().getValue());
-        if (debug)
+        if (debug && !isArray) {
             builder.addStatement("builder.addObject(\"$L\")", attribute);
-        if (!nullableObject) {
-            builder.addStatement("$L.$L = $T.CREATOR.createFromSerialized(reader,$L)", argClassName, attribute, object, debug ? "builder" : "null");
+        }
+        if (!nullableObject || isArray) {
+            if (isArray && debug) {
+                builder.addStatement("builder.addObject(\"[\"+i+\"]\")");
+            }
+            builder.addStatement("$L.$L = $T.CREATOR.createFromSerialized(reader,$L)", argClassName, isArray ? attribute + "[i]" : attribute, object, debug ? "builder" : "null");
+
         } else {
             builder.beginControlFlow("if (reader.readBool())");
             builder.addStatement("$L.$L = $T.CREATOR.createFromSerialized(reader,$L)", argClassName, attribute, object, debug ? "builder" : "null")
@@ -67,9 +80,9 @@ public class DeserializableHelper {
     static void readObjectArray(MethodSpec.Builder builder, ZarcelProperty property, String argClassName, boolean debug) {
         beginArray(builder, property, argClassName, property.objectNullable(), debug);
         //==========Process with i========
-        readObject(builder, property, argClassName, property.propertyName() + "[i]", false, false);
+        readObject(builder, property, argClassName, property.propertyName(), false, debug, true);
         //================================
-        endArray(builder, property.objectNullable());
+        endArray(builder, property.objectNullable(), debug, true);
     }
 
     static void readCustomAdapter(MethodSpec.Builder builder, ZarcelProperty property, String argClassName, boolean debug) {
@@ -120,29 +133,39 @@ public class DeserializableHelper {
         }
 
         if (debug) {
-            builder.addStatement("builder.addType(\"$L\",\"$L\")", propertyName,
-                    (object != null ? objectSimpleName : property.dataType().getValue()) + "[]");
+            builder.addStatement("builder.addObject(\"$L\")", propertyName);
         }
 
         if (arrayNullable) {
-            builder.beginControlFlow("if (reader.readBool())")
-                    .addStatement("int size = reader.readInt32()");
+            builder.beginControlFlow("if (reader.readBool())");
+        } else {
+            builder.beginControlFlow("");
         }
+        builder.addStatement("int size = reader.readInt32()");
         // Primitive or object
         if (object != null) {
             builder.addStatement("$L.$L = new $T[size]", argClassName, propertyName, object);
+            if (debug)
+                builder.addStatement("builder.beginObjectArray(\"$L\")", objectSimpleName);
         } else {
             builder.addStatement("$L.$L = new $L[size]", argClassName, propertyName, property.dataType().getValue());
+            if (debug)
+                builder.addStatement("builder.endPrimitiveArray(\"$L\",size)", property.dataType().getValue());
         }
 
         builder.beginControlFlow("for (int i=0; i< size; i++)");
     }
 
-    private static void endArray(MethodSpec.Builder builder, boolean arrayNullable) {
+    private static void endArray(MethodSpec.Builder builder, boolean arrayNullable, boolean debug, boolean isObject) {
         builder.endControlFlow();
-        if (arrayNullable) {
-            // end readBool()
-            builder.endControlFlow();
+        if (debug && isObject) {
+            builder.addStatement("builder.endObjectArray()");
         }
+        if (arrayNullable) {
+            builder.nextControlFlow("else");
+            if (debug)
+                builder.addStatement("builder.endNullObject()");
+        }
+        builder.endControlFlow();
     }
 }

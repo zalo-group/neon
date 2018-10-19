@@ -159,7 +159,7 @@ class ZarcelGenerator {
         }
         builder.addStatement("version = reader.readInt32()");
         if (debug) {
-            builder.addStatement("builder.addType(\"$L\",$L)", "version", "String.valueOf(version)");
+            builder.addStatement("builder.addIntAttr(\"version\",version)");
         }
         builder.beginControlFlow("if (version>$L)", data.version())
                 .addStatement("throw new IllegalArgumentException(\"$L is outdated. Update $L to deserialize newest binary data.\")", data.name(), data.name())
@@ -194,7 +194,7 @@ class ZarcelGenerator {
                         DeserializableHelper.readPrimitive(builder, primitiveType, argClassName, property.propertyName(), debug);
                         break;
                     case OBJECT:
-                        DeserializableHelper.readObject(builder, property, argClassName, property.propertyName(), property.objectNullable(), debug);
+                        DeserializableHelper.readObject(builder, property, argClassName, property.propertyName(), property.objectNullable(), debug, false);
                         break;
                     case PRIMITIVE_ARRAY:
                         DeserializableHelper.readPrimitiveArray(builder, property, argClassName, debug);

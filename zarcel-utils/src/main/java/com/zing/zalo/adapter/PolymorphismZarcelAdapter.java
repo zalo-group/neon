@@ -17,10 +17,6 @@ public abstract class PolymorphismZarcelAdapter<T> implements ZarcelAdapter<T> {
 
     private TreeMap<Integer, Class> children;
 
-    public enum RegisterType {
-        ADD, UPDATE_CLASS, UPDATE_TYPE
-    }
-
     protected abstract void onRegisterChildClasses();
 
     protected PolymorphismZarcelAdapter() {
@@ -76,7 +72,7 @@ public abstract class PolymorphismZarcelAdapter<T> implements ZarcelAdapter<T> {
 
         int type = reader.readInt32();
         if (builder != null)
-            builder.addType("type", String.valueOf(type));
+            builder.addIntAttr("type", (type));
         for (Map.Entry<Integer, Class> child : children.entrySet()) {
             if (child.getKey() == type) {
                 if (builder != null)

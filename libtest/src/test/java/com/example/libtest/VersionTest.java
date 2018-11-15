@@ -21,9 +21,8 @@ public class VersionTest extends BaseTest {
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         baseVersion.serialize(writer);
         ZarcelNewVersion origin = ZarcelNewVersion.createFromBaseVersion(baseVersion);
-        SerializableHelper<ZarcelNewVersion> helper = new SerializableHelper<>();
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelNewVersion, String> log = helper.deserialize(input, ZarcelNewVersion.CREATOR, true);
+        Map.Entry<ZarcelNewVersion, String> log = SerializableHelper.deserialize(input, ZarcelNewVersion.CREATOR, true);
         System.out.println(log.getValue());
         assertZarcelVersion(origin, log.getKey());
     }
@@ -35,11 +34,10 @@ public class VersionTest extends BaseTest {
         newVersion.mRadius = 2.2f;
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         newVersion.serialize(writer);
-        SerializableHelper<ZarcelBaseVersion> helper = new SerializableHelper<>();
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
         Map.Entry<ZarcelBaseVersion, String> log = null;
         try {
-            helper.deserialize(input, ZarcelBaseVersion.CREATOR, true);
+            SerializableHelper.deserialize(input, ZarcelBaseVersion.CREATOR, true);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             if (e.getCause() instanceof IllegalArgumentException) {

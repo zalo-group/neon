@@ -19,9 +19,8 @@ public class ObjectTest extends BaseTest {
         setZarcelObjectValue(origin);
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         origin.serialize(writer);
-        SerializableHelper<ZarcelObject> helper = new SerializableHelper<>();
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelObject, String> log = helper.deserialize(input, ZarcelObject.CREATOR, true);
+        Map.Entry<ZarcelObject, String> log = SerializableHelper.deserialize(input, ZarcelObject.CREATOR, true);
         System.out.println(log.getValue());
         assertZarcelObject(origin, log.getKey());
     }

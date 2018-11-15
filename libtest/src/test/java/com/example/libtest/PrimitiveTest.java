@@ -15,9 +15,8 @@ public class PrimitiveTest extends BaseTest {
         setZarcelPrimitiveProperty(origin);
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         origin.serialize(writer);
-        SerializableHelper<ZarcelPrimitive> helper = new SerializableHelper<>();
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelPrimitive, String> log = helper.deserialize(input, ZarcelPrimitive.CREATOR, true);
+        Map.Entry<ZarcelPrimitive, String> log = SerializableHelper.deserialize(input, ZarcelPrimitive.CREATOR, true);
         System.out.println(log.getValue());
         assertZarcelPrimitive(origin, log.getKey());
     }

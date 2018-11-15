@@ -18,9 +18,8 @@ public class CustomAdapterTest extends BaseTest {
         setZarcelCustomAnimal(origin);
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput(2000000);
         origin.serialize(writer);
-        SerializableHelper<ZarcelCustomAnimal> helper = new SerializableHelper<>();
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelCustomAnimal, String> log = helper.deserialize(input, ZarcelCustomAnimal.CREATOR, true);
+        Map.Entry<ZarcelCustomAnimal, String> log = SerializableHelper.deserialize(input, ZarcelCustomAnimal.CREATOR, true);
         System.out.println(log.getValue());
         assertZarcelCustomAnimal(origin, log.getKey());
     }
@@ -33,9 +32,8 @@ public class CustomAdapterTest extends BaseTest {
         ((ZarcelCar) origin.vehicle).maxSpeed = 50;
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         origin.serialize(writer);
-        SerializableHelper<ZarcelAbstract> helper = new SerializableHelper<>();
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelAbstract, String> log = helper.deserialize(input, ZarcelAbstract.CREATOR, true);
+        Map.Entry<ZarcelAbstract, String> log = SerializableHelper.deserialize(input, ZarcelAbstract.CREATOR, true);
         System.out.println(log.getValue());
         assertZarcelVehicle(origin.vehicle, log.getKey().vehicle);
     }

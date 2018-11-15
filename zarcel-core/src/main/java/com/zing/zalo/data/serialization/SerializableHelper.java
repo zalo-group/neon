@@ -3,36 +3,40 @@ package com.zing.zalo.data.serialization;
 import java.util.AbstractMap;
 import java.util.Map;
 
-public class SerializableHelper<T extends Serializable> {
-
-    private final int mMaxDepth;
-
-    public SerializableHelper() {
-        mMaxDepth = 4;
-    }
-
-    public SerializableHelper(int maxDepth) {
-        mMaxDepth = maxDepth;
+public final class SerializableHelper {
+    private SerializableHelper() {
     }
 
     /**
      * @return Object T and log if debug = true.
      */
 
-
-    public Map.Entry<T, String> deserialize(SerializedInput serializedInput, Serializable.Creator<T> input, boolean debug) throws Exception {
-        DebugBuilder builder = new DebugBuilder(4, mMaxDepth);
-        T obj;
-        if (debug) {
-            try {
-                obj = input.createFromSerialized(serializedInput, builder);
-            } catch (Exception e) {
-                builder.onError();
-                throw new Exception(builder.toString(), e);
-            }
-            return new AbstractMap.SimpleEntry<>(obj, builder.toString());
-        } else {
+    public static <T extends Serializable> Map.Entry<T, String> deserialize(
+            SerializedInput serializedInput,
+            Serializable.Creator<T> input,
+            boolean debug,
+            int indent,
+            int maxDepth
+    ) throws Exception {
+        if (!debug) {
             return new AbstractMap.SimpleEntry<>(input.createFromSerialized(serializedInput, null), null);
         }
+
+        DebugBuilder builder = new DebugBuilder(indent, maxDepth);
+        try {
+            T obj = input.createFromSerialized(serializedInput, builder);
+            return new AbstractMap.SimpleEntry<>(obj, builder.toString());
+        } catch (Exception e) {
+            builder.onError();
+            throw new Exception(builder.toString(), e);
+        }
+    }
+
+    public static <T extends Serializable> Map.Entry<T, String> deserialize(
+            SerializedInput serializedInput,
+            Serializable.Creator<T> input,
+            boolean debug
+    ) throws Exception {
+        return deserialize(serializedInput, input, debug, 4, 4);
     }
 }

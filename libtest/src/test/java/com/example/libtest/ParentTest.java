@@ -17,9 +17,8 @@ public class ParentTest extends BaseTest {
 
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput(2000000);
         origin.serialize(writer);
-        SerializableHelper<ZarcelParent> helper = new SerializableHelper<>();
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelParent, String> log = helper.deserialize(input, ZarcelParent.CREATOR, true);
+        Map.Entry<ZarcelParent, String> log = SerializableHelper.deserialize(input, ZarcelParent.CREATOR, true);
         System.out.println(log.getValue());
         assertZarcelRoot(origin, log.getKey());
     }
@@ -30,9 +29,8 @@ public class ParentTest extends BaseTest {
         setZarcelChild(origin);
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput(2000000);
         origin.serialize(writer);
-        SerializableHelper<ZarcelChild> helper = new SerializableHelper<>();
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelChild, String> log = helper.deserialize(input, ZarcelChild.CREATOR, true);
+        Map.Entry<ZarcelChild, String> log = SerializableHelper.deserialize(input, ZarcelChild.CREATOR, true);
         System.out.println(log.getValue());
         assertZarcelChild(origin, log.getKey());
     }

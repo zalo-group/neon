@@ -15,9 +15,8 @@ public class NullableTest extends BaseTest {
         setZarcelNullable(origin, false);
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         origin.serialize(writer);
-        SerializableHelper<ZarcelNullable> helper = new SerializableHelper<>();
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelNullable, String> log = helper.deserialize(input, ZarcelNullable.CREATOR, true);
+        Map.Entry<ZarcelNullable, String> log = SerializableHelper.deserialize(input, ZarcelNullable.CREATOR, true);
         System.out.println(log.getValue());
         assertZarcelNullable(origin, log.getKey());
     }

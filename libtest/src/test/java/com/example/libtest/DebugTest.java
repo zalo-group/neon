@@ -19,10 +19,9 @@ public class DebugTest extends BaseTest {
         setZarcelChild(origin);
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput(2000000);
         origin.serialize(writer);
-        SerializableHelper<ZarcelChild> helper = new SerializableHelper<>();
         Map.Entry<ZarcelChild, String> result = null;
         try {
-            result = helper.deserialize(new SerializedByteBufferInput(writer.toByteArray()), ZarcelChild.CREATOR, true);
+            result = SerializableHelper.deserialize(new SerializedByteBufferInput(writer.toByteArray()), ZarcelChild.CREATOR, true);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -35,10 +34,8 @@ public class DebugTest extends BaseTest {
         setZarcelChild(origin);
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput(1000000000);
         origin.serialize(writer);
-        SerializableHelper<ZarcelPig> helper = new SerializableHelper();
-        Map.Entry<ZarcelPig, String> result = null;
         try {
-            result = helper.deserialize(new SerializedByteBufferInput(writer.toByteArray()), ZarcelPig.CREATOR, true);
+            Map.Entry<ZarcelPig, String> result = SerializableHelper.deserialize(new SerializedByteBufferInput(writer.toByteArray()), ZarcelPig.CREATOR, true);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return;

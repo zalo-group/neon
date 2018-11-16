@@ -24,7 +24,6 @@ class ZarcelProcessorGenerator {
 
     private static final byte PRIMITIVE_ARRAY = 0;
     private static final byte OBJECT_ARRAY = 1;
-    private static final byte CONDITIONAL_OBJECT_ARRAY = 2;
 
     private static final String ZARCEL_CUSTOM_ADAPTER_NAME = Zarcel.Custom.class.getCanonicalName();
     private static final String MIGRATOR_NAME = Migrator.class.getCanonicalName();
@@ -49,11 +48,11 @@ class ZarcelProcessorGenerator {
         parseClassAnnotation();
         parseClass();
         parseProperties();
-        finish(filer);
+        finish(filer, type);
     }
 
-    private void finish(Filer filer) throws IOException {
-        classBuilder.build().generateFile(filer);
+    private void finish(Filer filer, Element originElement) throws IOException {
+        classBuilder.build().generateFile(filer, originElement);
     }
 
     private void parseClassAnnotation() {

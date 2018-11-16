@@ -10,6 +10,7 @@ import com.zing.zalo.data.serialization.SerializedOutput;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Filer;
+import javax.lang.model.element.Element;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
@@ -46,7 +47,7 @@ class ZarcelGenerator {
             });
     }
 
-    public void generateFile(@Nonnull ZarcelClass data, Filer filer) throws IOException {
+    void generateFile(@Nonnull ZarcelClass data, @Nonnull Filer filer, @Nonnull Element originElement) throws IOException {
         init(data);
         MethodSpec serialize = generateSerializeMethod(data);
         MethodSpec deserialize = generateDeserializeMethod(data);
@@ -58,11 +59,11 @@ class ZarcelGenerator {
             className = argClass;
         TypeSpec.Builder zarcelClassBuilder = TypeSpec.classBuilder(className + ZARCEL_SUFFIX)
                 .addMethod(serialize)
-                .addMethod(deserialize);
+                .addMethod(deserialize)
+                .addOriginatingElement(originElement);
         TypeSpec zarcelClass = zarcelClassBuilder.build();
         JavaFile javaFile = JavaFile.builder(data.thisPackage().trim(), zarcelClass).indent("    ")
                 .build();
-
         javaFile.writeTo(filer);
     }
 

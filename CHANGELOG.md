@@ -1,5 +1,9 @@
 Change Log
 ==========
+Zarcel v0.8.0 *(2018-11-16)*
+----------------------------
+* Support incremental build with gradle.
+
 Zarcel v0.7.0 *(2018-10-18)*
 ----------------------------
 * Support debug structure object.

@@ -11,8 +11,16 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
+@SupportedAnnotationTypes({
+        "com.zing.zalo.annotations.Zarcel"
+})
+@SupportedOptions({
+        "com.zing.zalo.annotations.Zarcel"
+})
 public class ZarcelProcessor extends AbstractProcessor {
 
     private Filer filer;
@@ -31,7 +39,9 @@ public class ZarcelProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnv) {
         Collection<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(Zarcel.class);
         List<TypeElement> types = ElementFilter.typesIn(annotatedElements);
-
+        if (types.size() == 0)
+            return false;
+        System.out.println("ZarcelProcessor: Rewrite number of files: " + types.size());
         for (TypeElement type : types) {
             ZarcelProcessorGenerator generator = new ZarcelProcessorGenerator();
             try {
@@ -40,15 +50,7 @@ public class ZarcelProcessor extends AbstractProcessor {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.toString());
             }
         }
-
-        return false;
-    }
-
-    @Override
-    public Set<String> getSupportedAnnotationTypes() {
-        TreeSet<String> result = new TreeSet<>();
-        result.add(Zarcel.class.getCanonicalName());
-        return result;
+        return true;
     }
 
     @Override

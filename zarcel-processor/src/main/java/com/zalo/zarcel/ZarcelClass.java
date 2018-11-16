@@ -6,6 +6,7 @@ import com.squareup.javapoet.ClassName;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Filer;
+import javax.lang.model.element.Element;
 import java.io.IOException;
 import java.util.Map;
 
@@ -85,8 +86,8 @@ public abstract class ZarcelClass {
         public abstract ZarcelClass build();
     }
 
-    public void generateFile(Filer filer) throws IOException {
+    public void generateFile(Filer filer, Element originElement) throws IOException {
         ZarcelGenerator generator = new ZarcelGenerator();
-        generator.generateFile(this, filer);
+        generator.generateFile(this, filer, originElement);
     }
 }

@@ -3,12 +3,12 @@ package com.zalo.zing.extendClass;
 import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
 import com.zing.zalo.data.serialization.DebugBuilder;
-import com.zing.zalo.data.serialization.Serializable;
+import com.zing.zalo.data.serialization.ZarcelSerializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
 @Zarcel
-public class ZarcelChild extends ZarcelParent implements Serializable {
+public class ZarcelChild extends ZarcelParent implements ZarcelSerializable {
     public String daddyName;
 
     @Override
@@ -16,7 +16,7 @@ public class ZarcelChild extends ZarcelParent implements Serializable {
         ZarcelChild__Zarcel.serialize(this, serializedOutput);
     }
 
-    public static Serializable.Creator<ZarcelChild> CREATOR = new Serializable.Creator<ZarcelChild>() {
+    public static ZarcelSerializable.Creator<ZarcelChild> CREATOR = new ZarcelSerializable.Creator<ZarcelChild>() {
         @Nullable
         @Override
         public ZarcelChild createFromSerialized(SerializedInput input, DebugBuilder builder) {

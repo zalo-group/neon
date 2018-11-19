@@ -5,14 +5,14 @@ import com.zing.zalo.adapter.DateZarcelAdapter;
 import com.zing.zalo.annotations.Ignore;
 import com.zing.zalo.annotations.Zarcel;
 import com.zing.zalo.data.serialization.DebugBuilder;
-import com.zing.zalo.data.serialization.Serializable;
+import com.zing.zalo.data.serialization.ZarcelSerializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
 import java.util.Date;
 
 @Zarcel
-public class Human implements Serializable {
+public class Human implements ZarcelSerializable {
     public String name;
     public int age;
     @Zarcel.Custom(adapter = DateZarcelAdapter.class)
@@ -29,7 +29,7 @@ public class Human implements Serializable {
         Human__Zarcel.serialize(this, output);
     }
 
-    public static Serializable.Creator<Human> CREATOR = new Serializable.Creator<Human>() {
+    public static ZarcelSerializable.Creator<Human> CREATOR = new ZarcelSerializable.Creator<Human>() {
         @Nullable
         @Override
         public Human createFromSerialized(SerializedInput input, DebugBuilder builder) {

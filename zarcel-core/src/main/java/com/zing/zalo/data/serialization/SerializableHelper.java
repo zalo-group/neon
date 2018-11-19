@@ -11,9 +11,9 @@ public final class SerializableHelper {
      * @return Object T and log if debug = true.
      */
 
-    public static <T extends Serializable> Map.Entry<T, String> deserialize(
+    public static <T extends ZarcelSerializable> Map.Entry<T, String> deserialize(
             SerializedInput serializedInput,
-            Serializable.Creator<T> input,
+            ZarcelSerializable.Creator<T> input,
             boolean debug,
             int indent,
             int maxDepth
@@ -32,9 +32,9 @@ public final class SerializableHelper {
         }
     }
 
-    public static <T extends Serializable> Map.Entry<T, String> deserialize(
+    public static <T extends ZarcelSerializable> Map.Entry<T, String> deserialize(
             SerializedInput serializedInput,
-            Serializable.Creator<T> input,
+            ZarcelSerializable.Creator<T> input,
             boolean debug
     ) throws Exception {
         return deserialize(serializedInput, input, debug, 4, 4);

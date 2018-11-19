@@ -4,12 +4,12 @@ import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
 import com.zalo.zing.object.ZarcelObjectOne;
 import com.zing.zalo.data.serialization.DebugBuilder;
-import com.zing.zalo.data.serialization.Serializable;
+import com.zing.zalo.data.serialization.ZarcelSerializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
 @Zarcel
-public class ZarcelCat extends ZarcelAnimal implements Serializable {
+public class ZarcelCat extends ZarcelAnimal implements ZarcelSerializable {
 
     public int[] foods;
     public ZarcelObjectOne[] playable;
@@ -19,7 +19,7 @@ public class ZarcelCat extends ZarcelAnimal implements Serializable {
         ZarcelCat__Zarcel.serialize(this, serializedOutput);
     }
 
-    public static Serializable.Creator<ZarcelCat> CREATOR = new Serializable.Creator<ZarcelCat>() {
+    public static ZarcelSerializable.Creator<ZarcelCat> CREATOR = new ZarcelSerializable.Creator<ZarcelCat>() {
         @Nullable
         @Override
         public ZarcelCat createFromSerialized(SerializedInput input, DebugBuilder builder) {

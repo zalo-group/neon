@@ -3,12 +3,12 @@ package com.zalo.zing.customadapter;
 import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
 import com.zing.zalo.data.serialization.DebugBuilder;
-import com.zing.zalo.data.serialization.Serializable;
+import com.zing.zalo.data.serialization.ZarcelSerializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
 @Zarcel
-public class ZarcelCustomAnimal implements Serializable {
+public class ZarcelCustomAnimal implements ZarcelSerializable {
 
 
     @Zarcel.Custom(adapter = AnimalAdapter.class)
@@ -19,7 +19,7 @@ public class ZarcelCustomAnimal implements Serializable {
         ZarcelCustomAnimal__Zarcel.serialize(this, serializedOutput);
     }
 
-    public static Serializable.Creator<ZarcelCustomAnimal> CREATOR = new Serializable.Creator<ZarcelCustomAnimal>() {
+    public static ZarcelSerializable.Creator<ZarcelCustomAnimal> CREATOR = new ZarcelSerializable.Creator<ZarcelCustomAnimal>() {
         @Nullable
         @Override
         public ZarcelCustomAnimal createFromSerialized(SerializedInput input, DebugBuilder builder) {

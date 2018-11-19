@@ -3,12 +3,12 @@ package com.zalo.zing.object;
 import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
 import com.zing.zalo.data.serialization.DebugBuilder;
-import com.zing.zalo.data.serialization.Serializable;
+import com.zing.zalo.data.serialization.ZarcelSerializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
 @Zarcel(version = 2)
-public class ZarcelObjectTwo implements Serializable {
+public class ZarcelObjectTwo implements ZarcelSerializable {
 
     @Zarcel.Property(sinceVersion = 1)
     public int mSize;

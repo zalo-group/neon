@@ -5,12 +5,12 @@ import com.zing.zalo.annotations.Zarcel;
 import com.zalo.zing.object.ZarcelObjectOne;
 import com.zalo.zing.object.ZarcelObjectTwo;
 import com.zing.zalo.data.serialization.DebugBuilder;
-import com.zing.zalo.data.serialization.Serializable;
+import com.zing.zalo.data.serialization.ZarcelSerializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
 @Zarcel
-public class ZarcelPig extends ZarcelAnimal implements Serializable {
+public class ZarcelPig extends ZarcelAnimal implements ZarcelSerializable {
 
     public ZarcelObjectOne weight;
     public ZarcelObjectTwo[] height;
@@ -20,7 +20,7 @@ public class ZarcelPig extends ZarcelAnimal implements Serializable {
         ZarcelPig__Zarcel.serialize(this, serializedOutput);
     }
 
-    public static Serializable.Creator<ZarcelPig> CREATOR = new Serializable.Creator<ZarcelPig>() {
+    public static ZarcelSerializable.Creator<ZarcelPig> CREATOR = new ZarcelSerializable.Creator<ZarcelPig>() {
         @Nullable
         @Override
         public ZarcelPig createFromSerialized(SerializedInput input, DebugBuilder builder) {

@@ -3,14 +3,14 @@ package com.zalo.zing.abstractAdapter;
 import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
 import com.zing.zalo.data.serialization.DebugBuilder;
-import com.zing.zalo.data.serialization.Serializable;
+import com.zing.zalo.data.serialization.ZarcelSerializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
 import java.lang.reflect.InvocationTargetException;
 
 @Zarcel
-public class ZarcelAbstract implements Serializable {
+public class ZarcelAbstract implements ZarcelSerializable {
 
     @Zarcel.Custom(adapter = VehicleAdapter.class)
     public ZarcelVehicle vehicle;

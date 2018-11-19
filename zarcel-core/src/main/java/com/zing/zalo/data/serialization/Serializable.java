@@ -8,6 +8,6 @@ public interface Serializable {
     void serialize(SerializedOutput output);
 
     interface Creator<T extends Serializable> {
-        T createFromSerialized(SerializedInput input, DebugBuilder builder);
+        T createFromSerialized(SerializedInput input);
     }
 }

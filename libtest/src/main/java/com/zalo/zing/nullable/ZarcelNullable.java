@@ -5,12 +5,12 @@ import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
 import com.zalo.zing.primitive.ZarcelPrimitive;
 import com.zing.zalo.data.serialization.DebugBuilder;
-import com.zing.zalo.data.serialization.Serializable;
+import com.zing.zalo.data.serialization.ZarcelSerializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
 @Zarcel
-public class ZarcelNullable implements Serializable {
+public class ZarcelNullable implements ZarcelSerializable {
 
     @NonNull
     public ZarcelPrimitive mPet;
@@ -23,7 +23,7 @@ public class ZarcelNullable implements Serializable {
         ZarcelNullable__Zarcel.serialize(this, serializedOutput);
     }
 
-    public static Serializable.Creator<ZarcelNullable> CREATOR = new Serializable.Creator<ZarcelNullable>() {
+    public static ZarcelSerializable.Creator<ZarcelNullable> CREATOR = new ZarcelSerializable.Creator<ZarcelNullable>() {
         @Nullable
         @Override
         public ZarcelNullable createFromSerialized(SerializedInput input, DebugBuilder builder) {

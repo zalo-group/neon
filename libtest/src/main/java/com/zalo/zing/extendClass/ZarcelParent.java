@@ -5,12 +5,12 @@ import com.zing.zalo.annotations.Zarcel;
 import com.zalo.zing.customadapter.AnimalAdapter;
 import com.zalo.zing.customadapter.ZarcelAnimal;
 import com.zing.zalo.data.serialization.DebugBuilder;
-import com.zing.zalo.data.serialization.Serializable;
+import com.zing.zalo.data.serialization.ZarcelSerializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 
 @Zarcel(version = 3)
-public class ZarcelParent implements Serializable {
+public class ZarcelParent implements ZarcelSerializable {
 
     @Zarcel.Property(sinceVersion = 1)
     public int x;
@@ -30,7 +30,7 @@ public class ZarcelParent implements Serializable {
         ZarcelParent__Zarcel.serialize(this, serializedOutput);
     }
 
-    public static Serializable.Creator<ZarcelParent> CREATOR = new Serializable.Creator<ZarcelParent>() {
+    public static ZarcelSerializable.Creator<ZarcelParent> CREATOR = new ZarcelSerializable.Creator<ZarcelParent>() {
         @Nullable
         @Override
         public ZarcelParent createFromSerialized(SerializedInput input, DebugBuilder builder) {

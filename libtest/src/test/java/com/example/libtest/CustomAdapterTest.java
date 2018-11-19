@@ -3,7 +3,6 @@ package com.example.libtest;
 import com.zalo.zing.abstractAdapter.ZarcelAbstract;
 import com.zalo.zing.abstractAdapter.ZarcelCar;
 import com.zalo.zing.customadapter.ZarcelCustomAnimal;
-import com.zalo.zing.object.ZarcelObject;
 import com.zing.zalo.data.serialization.SerializableHelper;
 import com.zing.zalo.data.serialization.SerializedByteBufferInput;
 import com.zing.zalo.data.serialization.SerializedByteBufferOutput;

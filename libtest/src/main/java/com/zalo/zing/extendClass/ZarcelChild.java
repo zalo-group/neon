@@ -2,8 +2,8 @@ package com.zalo.zing.extendClass;
 
 import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
-import com.zing.zalo.data.serialization.DebugBuilder;
-import com.zing.zalo.data.serialization.ZarcelSerializable;
+import com.zing.zalo.helper.DebugBuilder;
+import com.zing.zalo.helper.ZarcelSerializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 

@@ -1,4 +1,4 @@
-package com.zing.zalo.data.serialization;
+package com.zing.zalo.helper;
 
 public class DebugBuilder {
     private int mNestedObject;

@@ -1,7 +1,7 @@
 package com.zalo.zing.customadapter;
 
 import com.zing.zalo.adapter.ZarcelAdapter;
-import com.zing.zalo.data.serialization.DebugBuilder;
+import com.zing.zalo.helper.DebugBuilder;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 

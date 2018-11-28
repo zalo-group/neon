@@ -1,4 +1,7 @@
-package com.zing.zalo.data.serialization;
+package com.zing.zalo.helper;
+
+import com.zing.zalo.data.serialization.SerializedInput;
+import com.zing.zalo.data.serialization.SerializedOutput;
 
 public interface ZarcelSerializable {
     void serialize(SerializedOutput output);

@@ -160,7 +160,7 @@ class ZarcelGenerator {
         }
         builder.addStatement("version = reader.readInt32()");
         if (debug) {
-            builder.addStatement("builder.addIntAttr(\"version\",version)");
+            builder.addStatement("builder.addVersion(version)");
         }
         builder.beginControlFlow("if (version>$L)", data.version())
                 .addStatement("throw new IllegalArgumentException(\"$L is outdated. Update $L to deserialize newest binary data.\")", data.name(), data.name())
@@ -171,7 +171,7 @@ class ZarcelGenerator {
         // Check base
         if (data.inheritanceSupported()) {
             if (debug) {
-                builder.addStatement("builder.addObject(\"parentSerialize\")");
+                builder.addStatement("builder.addObjectAttrName(\"parentSerialize\")");
             }
             builder.addStatement("$T.createFromSerialized($L,reader,builder)",
                     ClassName.get(data.parentClass().getKey(), data.parentClass().getValue() + ZARCEL_SUFFIX),

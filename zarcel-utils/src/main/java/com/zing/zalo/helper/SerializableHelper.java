@@ -1,6 +1,8 @@
-package com.zing.zalo.zarcel.helper;
+package com.zing.zalo.helper;
 
 import com.zing.zalo.data.serialization.SerializedInput;
+import com.zing.zalo.zarcel.helper.DebugBuilder;
+import com.zing.zalo.zarcel.helper.ZarcelSerializable;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -13,32 +15,33 @@ public final class SerializableHelper {
      * @return Object T and log if debug = true.
      */
 
-    public static <T extends ZarcelSerializable> Map.Entry<T, String> deserialize(
+    public static <T extends ZarcelSerializable> T deserialize(
             SerializedInput serializedInput,
             ZarcelSerializable.Creator<T> input,
-            boolean debug,
+            DebugBuilder.Logger logger,
             int indent,
             int maxDepth
     ) throws Exception {
-        if (!debug) {
-            return new AbstractMap.SimpleEntry<>(input.createFromSerialized(serializedInput, null), null);
+        if (logger == null) {
+            return input.createFromSerialized(serializedInput, null);
         }
 
-        DebugBuilder builder = new DebugBuilder(indent, maxDepth);
+        DebugBuilder builder = new DebugBuilderImpl(indent, maxDepth);
         try {
             T obj = input.createFromSerialized(serializedInput, builder);
-            return new AbstractMap.SimpleEntry<>(obj, builder.toString());
+            logger.log(builder);
+            return obj;
         } catch (Exception e) {
             builder.onError();
-            throw new Exception(builder.toString(), e);
+            throw new Exception(builder.getLog(), e);
         }
     }
 
-    public static <T extends ZarcelSerializable> Map.Entry<T, String> deserialize(
+    public static <T extends ZarcelSerializable> T deserialize(
             SerializedInput serializedInput,
             ZarcelSerializable.Creator<T> input,
-            boolean debug
+            DebugBuilder.Logger logger
     ) throws Exception {
-        return deserialize(serializedInput, input, debug, 4, 4);
+        return deserialize(serializedInput, input, logger, 4, 4);
     }
 }

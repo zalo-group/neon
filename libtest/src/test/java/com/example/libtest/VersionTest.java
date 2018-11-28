@@ -1,9 +1,10 @@
 package com.example.libtest;
 
+import com.zalo.zing.log.Logger;
 import com.zalo.zing.version.Data;
 import com.zalo.zing.version.ZarcelBaseVersion;
 import com.zalo.zing.version.ZarcelNewVersion;
-import com.zing.zalo.zarcel.helper.SerializableHelper;
+import com.zing.zalo.helper.SerializableHelper;
 import com.zing.zalo.data.serialization.SerializedByteBufferInput;
 import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Test;
@@ -22,9 +23,8 @@ public class VersionTest extends BaseTest {
         baseVersion.serialize(writer);
         ZarcelNewVersion origin = ZarcelNewVersion.createFromBaseVersion(baseVersion);
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelNewVersion, String> log = SerializableHelper.deserialize(input, ZarcelNewVersion.CREATOR, true);
-        System.out.println(log.getValue());
-        assertZarcelVersion(origin, log.getKey());
+        ZarcelNewVersion result = SerializableHelper.deserialize(input, ZarcelNewVersion.CREATOR, Logger.getInstance());
+        assertZarcelVersion(origin, result);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -35,9 +35,8 @@ public class VersionTest extends BaseTest {
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         newVersion.serialize(writer);
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelBaseVersion, String> log = null;
         try {
-            SerializableHelper.deserialize(input, ZarcelBaseVersion.CREATOR, true);
+            SerializableHelper.deserialize(input, ZarcelBaseVersion.CREATOR, Logger.getInstance());
         } catch (Exception e) {
             System.out.println(e.getMessage());
             if (e.getCause() instanceof IllegalArgumentException) {

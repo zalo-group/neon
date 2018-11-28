@@ -1,12 +1,11 @@
 package com.example.libtest;
 
+import com.zalo.zing.log.Logger;
 import com.zalo.zing.nullable.ZarcelNullable;
-import com.zing.zalo.zarcel.helper.SerializableHelper;
 import com.zing.zalo.data.serialization.SerializedByteBufferInput;
 import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
+import com.zing.zalo.helper.SerializableHelper;
 import org.junit.Test;
-
-import java.util.Map;
 
 public class NullableTest extends BaseTest {
     @Test
@@ -16,9 +15,8 @@ public class NullableTest extends BaseTest {
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         origin.serialize(writer);
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelNullable, String> log = SerializableHelper.deserialize(input, ZarcelNullable.CREATOR, true);
-        System.out.println(log.getValue());
-        assertZarcelNullable(origin, log.getKey());
+        ZarcelNullable result = SerializableHelper.deserialize(input, ZarcelNullable.CREATOR, Logger.getInstance());
+        assertZarcelNullable(origin, result);
     }
 
     @Test(expected = NullPointerException.class)

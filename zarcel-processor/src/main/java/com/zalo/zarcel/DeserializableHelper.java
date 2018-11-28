@@ -59,11 +59,11 @@ public class DeserializableHelper {
     static void readObject(MethodSpec.Builder builder, ZarcelProperty property, String argClassName, String attribute, boolean nullableObject, boolean debug, boolean isArray) {
         ClassName object = ClassName.get(property.dataType().getKey(), property.dataType().getValue());
         if (debug && !isArray) {
-            builder.addStatement("builder.addObject(\"$L\")", attribute);
+            builder.addStatement("builder.addObjectAttrName(\"$L\")", attribute);
         }
         if (!nullableObject || isArray) {
             if (isArray && debug) {
-                builder.addStatement("builder.addObject(\"[\"+i+\"]\")");
+                builder.addStatement("builder.addObjectAttrName(\"[\"+i+\"]\")");
             }
             builder.addStatement("$L.$L = $T.CREATOR.createFromSerialized(reader,$L)", argClassName, isArray ? attribute + "[i]" : attribute, object, debug ? "builder" : "null");
 
@@ -92,7 +92,7 @@ public class DeserializableHelper {
         ClassName adapterClass = ClassName.get(adapterPackage, adapterClassName);
 
         if (debug) {
-            builder.addStatement("builder.addObject(\"$L\")", propertyName);
+            builder.addStatement("builder.addObjectAttrName(\"$L\")", propertyName);
         }
         if (!property.objectNullable()) {
             builder.beginControlFlow("");
@@ -133,7 +133,7 @@ public class DeserializableHelper {
         }
 
         if (debug) {
-            builder.addStatement("builder.addObject(\"$L\")", propertyName);
+            builder.addStatement("builder.addObjectAttrName(\"$L\")", propertyName);
         }
 
         if (arrayNullable) {

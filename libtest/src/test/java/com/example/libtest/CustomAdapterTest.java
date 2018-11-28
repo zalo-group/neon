@@ -2,8 +2,10 @@ package com.example.libtest;
 
 import com.zalo.zing.abstractAdapter.ZarcelAbstract;
 import com.zalo.zing.abstractAdapter.ZarcelCar;
+import com.zalo.zing.abstractAdapter.ZarcelVehicle;
 import com.zalo.zing.customadapter.ZarcelCustomAnimal;
-import com.zing.zalo.zarcel.helper.SerializableHelper;
+import com.zalo.zing.log.Logger;
+import com.zing.zalo.helper.SerializableHelper;
 import com.zing.zalo.data.serialization.SerializedByteBufferInput;
 import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Test;
@@ -18,9 +20,8 @@ public class CustomAdapterTest extends BaseTest {
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput(2000000);
         origin.serialize(writer);
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelCustomAnimal, String> log = SerializableHelper.deserialize(input, ZarcelCustomAnimal.CREATOR, true);
-        System.out.println(log.getValue());
-        assertZarcelCustomAnimal(origin, log.getKey());
+        ZarcelCustomAnimal result = SerializableHelper.deserialize(input, ZarcelCustomAnimal.CREATOR, Logger.getInstance());
+        assertZarcelCustomAnimal(origin, result);
     }
 
     @Test
@@ -32,8 +33,7 @@ public class CustomAdapterTest extends BaseTest {
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         origin.serialize(writer);
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelAbstract, String> log = SerializableHelper.deserialize(input, ZarcelAbstract.CREATOR, true);
-        System.out.println(log.getValue());
-        assertZarcelVehicle(origin.vehicle, log.getKey().vehicle);
+        ZarcelAbstract result = SerializableHelper.deserialize(input, ZarcelAbstract.CREATOR, Logger.getInstance());
+        assertZarcelVehicle(origin.vehicle, result.vehicle);
     }
 }

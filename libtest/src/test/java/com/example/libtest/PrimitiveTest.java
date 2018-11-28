@@ -1,7 +1,8 @@
 package com.example.libtest;
 
+import com.zalo.zing.log.Logger;
 import com.zalo.zing.primitive.ZarcelPrimitive;
-import com.zing.zalo.zarcel.helper.SerializableHelper;
+import com.zing.zalo.helper.SerializableHelper;
 import com.zing.zalo.data.serialization.SerializedByteBufferInput;
 import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Test;
@@ -16,8 +17,7 @@ public class PrimitiveTest extends BaseTest {
         SerializedByteBufferOutput writer = new SerializedByteBufferOutput();
         origin.serialize(writer);
         SerializedByteBufferInput input = new SerializedByteBufferInput(writer.toByteArray());
-        Map.Entry<ZarcelPrimitive, String> log = SerializableHelper.deserialize(input, ZarcelPrimitive.CREATOR, true);
-        System.out.println(log.getValue());
-        assertZarcelPrimitive(origin, log.getKey());
+        ZarcelPrimitive result = SerializableHelper.deserialize(input, ZarcelPrimitive.CREATOR, Logger.getInstance());
+        assertZarcelPrimitive(origin, result);
     }
 }

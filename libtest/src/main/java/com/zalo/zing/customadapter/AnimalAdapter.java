@@ -29,7 +29,8 @@ public class AnimalAdapter implements ZarcelAdapter<ZarcelAnimal[]> {
         for (int i = 0; i < size; i++) {
             int type = reader.readInt32();
             if (builder != null) {
-                builder.addObject("ZarcelAnimal[" + i + "]");
+                builder.addCustomAttr("type", String.valueOf(type), 4);
+                builder.addObjectAttrName("ZarcelAnimal[" + i + "]");
             }
             if (type == ZarcelAnimal.CAT) {
                 result[i] = ZarcelCat.CREATOR.createFromSerialized(reader, builder);

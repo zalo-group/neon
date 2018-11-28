@@ -1,4 +1,4 @@
-package com.zing.zalo.helper;
+package com.zing.zalo.zarcel.helper;
 
 import com.zing.zalo.data.serialization.SerializedInput;
 

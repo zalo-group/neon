@@ -1,7 +1,7 @@
 package com.zing.zalo.adapter;
 
 import com.zing.zalo.annotations.NonNull;
-import com.zing.zalo.helper.DebugBuilder;
+import com.zing.zalo.zarcel.helper.DebugBuilder;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 

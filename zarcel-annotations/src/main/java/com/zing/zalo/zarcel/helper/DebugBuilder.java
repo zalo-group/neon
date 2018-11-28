@@ -1,4 +1,4 @@
-package com.zing.zalo.helper;
+package com.zing.zalo.zarcel.helper;
 
 public class DebugBuilder {
     private int mNestedObject;

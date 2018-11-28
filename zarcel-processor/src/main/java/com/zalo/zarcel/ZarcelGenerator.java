@@ -6,7 +6,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
-import com.zing.zalo.helper.DebugBuilder;
+import com.zing.zalo.zarcel.helper.DebugBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Filer;

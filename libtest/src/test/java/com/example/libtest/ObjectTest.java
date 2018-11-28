@@ -1,7 +1,7 @@
 package com.example.libtest;
 
 import com.zalo.zing.object.ZarcelObject;
-import com.zing.zalo.helper.SerializableHelper;
+import com.zing.zalo.zarcel.helper.SerializableHelper;
 import com.zing.zalo.data.serialization.SerializedByteBufferInput;
 import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Ignore;

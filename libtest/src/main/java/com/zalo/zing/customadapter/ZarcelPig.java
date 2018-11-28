@@ -4,8 +4,8 @@ import android.support.annotation.Nullable;
 import com.zing.zalo.annotations.Zarcel;
 import com.zalo.zing.object.ZarcelObjectOne;
 import com.zalo.zing.object.ZarcelObjectTwo;
-import com.zing.zalo.helper.DebugBuilder;
-import com.zing.zalo.helper.ZarcelSerializable;
+import com.zing.zalo.zarcel.helper.DebugBuilder;
+import com.zing.zalo.zarcel.helper.ZarcelSerializable;
 import com.zing.zalo.data.serialization.SerializedInput;
 import com.zing.zalo.data.serialization.SerializedOutput;
 

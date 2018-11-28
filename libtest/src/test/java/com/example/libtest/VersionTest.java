@@ -3,7 +3,7 @@ package com.example.libtest;
 import com.zalo.zing.version.Data;
 import com.zalo.zing.version.ZarcelBaseVersion;
 import com.zalo.zing.version.ZarcelNewVersion;
-import com.zing.zalo.helper.SerializableHelper;
+import com.zing.zalo.zarcel.helper.SerializableHelper;
 import com.zing.zalo.data.serialization.SerializedByteBufferInput;
 import com.zing.zalo.data.serialization.SerializedByteBufferOutput;
 import org.junit.Test;

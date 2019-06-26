@@ -4,14 +4,7 @@ Zarcel là java preprocessor library. Zarcel sử dụng annotation để xử l
 
 ## Usage
 
-<pre>
-implementation 'com.zing.zalo:zarcel-annotations:0.4.0'
-annotationProcessor 'com.zing.zalo:zarcel-processor:0.4.0'
-</pre>
-
-hoặc
-
-Import from [source code](https://zalogit2.zing.vn/zinstant/zarceler/tags)
+You can build from source to use this library.
 
 ## Basic example
 Một class sử dụng Zarcel luôn cần implements Serializable.

@@ -3,9 +3,6 @@ package com.zing.neon.data.serialization;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
-/**
- * A 200% faster version of {@link SerializedByteArrayInput}.
- */
 public class SerializedByteBufferInput implements SerializedInput {
 
     private ByteBuffer in;

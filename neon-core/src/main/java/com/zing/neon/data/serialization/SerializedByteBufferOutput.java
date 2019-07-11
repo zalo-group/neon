@@ -3,14 +3,11 @@ package com.zing.neon.data.serialization;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
-/**
- * A 200% faster version of {@link SerializedByteArrayOutput}.
- */
 public class SerializedByteBufferOutput implements SerializedOutput {
     private ByteBuffer out;
     private int capacity;
     private int maxCapacity = 1 << 19; // 512kB
-    private int defaultSize = 1024;
+    private int defaultSize = 2048;
 
     public SerializedByteBufferOutput() {
         out = ByteBuffer.allocate(defaultSize);

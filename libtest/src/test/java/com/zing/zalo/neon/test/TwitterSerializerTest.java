@@ -11,7 +11,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-public class TwitterSerializerObject extends BaseTest {
+public class TwitterSerializerTest extends BaseTest {
     private final long NUM_LOOP = 2000;
 
     @Test

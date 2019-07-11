@@ -1,0 +1,23 @@
+plugins {
+  id "io.github.rockerhieu.versionberg" version "1.0.2"
+}
+
+apply plugin: 'java-library'
+
+versionberg {
+  major LIB_VERSION_MAJOR
+  minor LIB_VERSION_MINOR
+  nameTemplate LIB_VERSION_NAME_TEMPLATE
+  gitDir new File("${rootDir.parent}/.git")
+}
+
+dependencies {
+  testImplementation deps.junit
+}
+
+sourceCompatibility = versions.sourceCompatibilityVersion
+targetCompatibility = versions.targetCompatibilityVersion
+
+ext.VERSION_NAME = versionberg.name
+
+apply from: '../gradle-mvn-push.gradle'

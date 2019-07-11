@@ -1,1 +1,1 @@
-include ':zarcel-processor', ':libtest', ':zarcel-core', ':zarcel-annotations', ':zarcel-utils'
+include ':neon-processor', ':libtest', ':neon-core', ':neon-annotations', ':neon-utils'

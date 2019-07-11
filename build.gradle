@@ -1,43 +1,42 @@
 buildscript {
+  ext.deps = [
+      auto: [
+          value: [
+              core: 'com.google.auto.value:auto-value:1.6.2',
+              annotations: 'com.google.auto.value:auto-value-annotations:1.6.2'
+          ]
+      ],
+      findbugs: 'com.google.code.findbugs:jsr305:3.0.1',
+      javapoet: 'com.squareup:javapoet:1.11.1',
+      junit: 'junit:junit:4.12',
+      twitter: [
+          serial: 'com.twitter.serial:serial:0.1.6'
+      ],
+      appcompat: 'com.android.support:appcompat-v7:28.0.0-rc01'
+  ]
 
-    ext.deps = [
-            auto     : [
-                    value: [
-                            core       : 'com.google.auto.value:auto-value:1.6.2',
-                            annotations: 'com.google.auto.value:auto-value-annotations:1.6.2'
-                    ]
-            ],
-            findbugs : 'com.google.code.findbugs:jsr305:3.0.1',
-            javapoet : 'com.squareup:javapoet:1.11.1',
-            junit    : 'junit:junit:4.12',
-            twitter  : [
-                    serial: 'com.twitter.serial:serial:0.1.6'
-            ],
-            appcompat: 'com.android.support:appcompat-v7:28.0.0-rc01'
-    ]
+  ext.versions = [
+      sourceCompatibilityVersion: JavaVersion.VERSION_1_7,
+      targetCompatibilityVersion: JavaVersion.VERSION_1_7,
+  ]
 
-    ext.versions = [
-            sourceCompatibilityVersion: JavaVersion.VERSION_1_7,
-            targetCompatibilityVersion: JavaVersion.VERSION_1_7,
-    ]
-
-    apply from: './gradle-mvn-push-local.gradle'
-    repositories {
-        google()
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
-    }
+  apply from: './gradle-mvn-push-local.gradle'
+  repositories {
+    google()
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:3.4.1'
+  }
 }
 
 allprojects {
-    repositories {
-        google()
-        jcenter()
-    }
+  repositories {
+    google()
+    jcenter()
+  }
 }
 
 task clean(type: Delete) {
-    delete rootProject.buildDir
+  delete rootProject.buildDir
 }

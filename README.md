@@ -1,18 +1,18 @@
-# Zarcel Annotation
+# Neon Annotation
 
-Zarcel là java preprocessor library. Zarcel sử dụng annotation để xử lí các thuộc tính của class và auto generate java class phục vụ serialize và deserialize.
+Neon là java preprocessor library. Neon sử dụng annotation để xử lí các thuộc tính của class và auto generate java class phục vụ serialize và deserialize.
 
 ## Usage
 
 You can build from source to use this library.
 
 ## Basic example
-Một class sử dụng Zarcel luôn cần implements Serializable.
+Một class sử dụng Neon luôn cần implements Serializable.
 
-Annotatate class bằng @Zarcel và khai báo thuộc tính.
+Annotatate class bằng @Neon và khai báo thuộc tính.
 ```java
 
-@Zarcel
+@Neon
 public class Example implements Serializable {
     public int example1;
     public float example2;
@@ -24,28 +24,28 @@ Thêm 2 phương thức <b>bắt buộc</b> serialize và createFromSerialized t
 
 ```java
 
-@Zarcel
+@Neon
 public class Example implements Serializable {
     
     //...property 
     
     @Override
     public void serialize(SerializedOutput serializedOutput) {
-        Example__Zarcel.serialize(this, serializedOutput);
+        Example__Neon.serialize(this, serializedOutput);
     }
 
     public static Serializable.Creator<Example> CREATOR = new Creator<Example>() {
         @Override
         public Example createFromSerialized(SerializedInput input, DebugBuilder builder) {
             Example result = new Example();
-            Example__Zarcel.createFromSerialized(result, input, builder);
+            Example__Neon.createFromSerialized(result, input, builder);
             return result;
         }
     };
 }
 
 ```
-<b>Lưu ý:</b> Zarcel sẽ xử lí và tạo ra class có dạng \<Class\>__Zarcel gồm 2 phương thức:<br>
+<b>Lưu ý:</b> Neon sẽ xử lí và tạo ra class có dạng \<Class\>__Neon gồm 2 phương thức:<br>
  
  void serialize(\<Class\>, SerializedInput);<br>
  void deserialize(<Class>, SerializedOutput);<br>
@@ -62,7 +62,7 @@ public class Example implements Serializable {
 |float        |                  | 
 |double       |                  | 
 |String       |                  |
-|ZarcelObject |Bao gồm các class đã được annotate bằng @Zarcel|
+|NeonObject |Bao gồm các class đã được annotate bằng @Neon|
 |Object       | Một Object bất kì chưa khai báo ở trên. Tuy nhiên phải tự tạo adapter để sử dụng. Xem thêm [Custom Adapter](#custom-adapter)
 
 Ngoài kiểu Object bất kỳ ở trên, các kiểu còn lại đều có thể khai báo theo kiểu mảng [].
@@ -77,24 +77,24 @@ Có hỗ trợ inner static class.
 
 ## Quản lý version
 
-Khi thêm một thuộc tính vào class, chúng ta cần đảm bảo rằng những dữ liệu từ version cũ vẫn có thể được revert. Zarcel hỗ trợ quản lý version để đảm bảo có thể sử dụng dữ liệu ở các version cũ hơn.
+Khi thêm một thuộc tính vào class, chúng ta cần đảm bảo rằng những dữ liệu từ version cũ vẫn có thể được revert. Neon hỗ trợ quản lý version để đảm bảo có thể sử dụng dữ liệu ở các version cũ hơn.
 
 Khai báo: 
 ```java 
-@Zarcel(version=1, compatibleSince=1)
+@Neon(version=1, compatibleSince=1)
 public class Example implements Serializable {
    
    public int base;
    
-   @Zarcel.Property(sinceVersion=1)
+   @Neon.Property(sinceVersion=1)
    public int additionData;
    
    //.. methods
 }
 ```
 
-Như ví dụ trên, để khai báo version của class, ta sử dụng @Zarcel(version=1), để biết một property xuất hiện từ version nào, ta sử dụng @Zarcel.Property(sinceVersion=1).<br>
-Để ngưng hỗ trợ các version cũ, ta thêm @Zarcel(compatibleSince=1). Khi đó các binary có version < 1 sẽ báo lỗi nếu sử dụng.<br>
+Như ví dụ trên, để khai báo version của class, ta sử dụng @Neon(version=1), để biết một property xuất hiện từ version nào, ta sử dụng @Neon.Property(sinceVersion=1).<br>
+Để ngưng hỗ trợ các version cũ, ta thêm @Neon(compatibleSince=1). Khi đó các binary có version < 1 sẽ báo lỗi nếu sử dụng.<br>
 Mặc định version = 0, sinceVersion=0. Ngoài ra, sinceVersion không được lớn hơn version.<br>
 <b>Quan trọng:</b> Việc quản lý version chỉ áp dụng khi thêm thuộc tính vào class. Việc xóa tên thuộc tính có thể dẫn đến những dữ liệu của version cũ hoạt động sai.
 
@@ -102,10 +102,10 @@ Mặc định version = 0, sinceVersion=0. Ngoài ra, sinceVersion không đư�
 
 ## Serialize Parent
 
-Zarcel hỗ trợ việc serialize và deserialize một class, mà class được dc extends từ parent. Khi đó, Zarcel sẽ hỗ trợ serialize từ parent, và parent cũng phải là Zarcel Object. Có thể thiết lập như sau: 
+Neon hỗ trợ việc serialize và deserialize một class, mà class được dc extends từ parent. Khi đó, Neon sẽ hỗ trợ serialize từ parent, và parent cũng phải là Neon Object. Có thể thiết lập như sau:
 ```java
-@Zarcel(inheritanceSupported = true)
-public class ZarcelChild extends ZarcelParent implements Serializable {
+@Neon(inheritanceSupported = true)
+public class NeonChild extends NeonParent implements Serializable {
     public String daddyName;
     
     //...
@@ -121,8 +121,8 @@ Sử dụng class SerializableHelper để lấy dữ liệu debug.
 ```java
 class Example {
     public void sample() {
-        SerializableHelper<ZarcelSample> helper = new SerializableHelper();
-        Map.Entry<ZarcelSample, String> result = helper.deserialize(serializedInput, ZarcelSample.CREATOR, true);
+        SerializableHelper<NeonSample> helper = new SerializableHelper();
+        Map.Entry<NeonSample, String> result = helper.deserialize(serializedInput, NeonSample.CREATOR, true);
         // Print structure of object
         Log.d(TAG, result.getValue());
     }
@@ -133,14 +133,14 @@ class Example {
 
 Sử dụng @NonNull hoặc @NotNull cho một thuộc tính không được phép null. Khi đó zarcel sẽ cho phép đọc ghi dữ liệu mà không cần kiểm tra.
 
-Sử dụng @Deprecated thông báo về một thuộc tính không nên sử dụng nữa. Tuy nhiên, Zarcel vẫn sẽ đọc và ghi thuộc tính này.
+Sử dụng @Deprecated thông báo về một thuộc tính không nên sử dụng nữa. Tuy nhiên, Neon vẫn sẽ đọc và ghi thuộc tính này.
 
 ## Migrator annotation
 
 Sử dụng để thay đổi giá trị của object sau khi để deserialized. Ví dụ: Thay đổi giá trị mặc định của một thuộc tính nếu như version < MIN_VERSION.
 
 ```java
- @Zarcel(version = 4)
+ @Neon(version = 4)
  @Migrator(ColorMigrator.class)
  public class ZColor implements Serializable {
      int color = Color.TRANSPARENT;
@@ -148,7 +148,7 @@ Sử dụng để thay đổi giá trị của object sau khi để deserialized
  ```
  
  ```java
-  public class ColorMigrator implements ZarcelMigrator<ZColor> {
+  public class ColorMigrator implements NeonMigrator<ZColor> {
     @Override
     void migrate(ZColor object, int fromVersion, int toVersion) {
         if (fromVersion <= 3) {
@@ -159,19 +159,19 @@ Sử dụng để thay đổi giá trị của object sau khi để deserialized
   }
   ```
   
-  <b>Note:</b> Zarcel chỉ gọi Migrator khi class này <b>implement</b> ZarcelMigrator<? extends Serializable>
+  <b>Note:</b> Neon chỉ gọi Migrator khi class này <b>implement</b> NeonMigrator<? extends Serializable>
 
 ## Custom Adapter
 
-Phần này sẽ hướng dẫn sử dụng một adapter tùy biến, được sử dụng để serialize và deserialize một kiểu dữ liệu tùy chỉnh, không thể sử dụng Zarcel Object.
+Phần này sẽ hướng dẫn sử dụng một adapter tùy biến, được sử dụng để serialize và deserialize một kiểu dữ liệu tùy chỉnh, không thể sử dụng Neon Object.
 
 #### Bước một: Tạo Adapter
 
-Một adapter <b>bắt buộc</b> implements <i>ZarcelAdapter</i>. Tham số chính là class cần serialize.
+Một adapter <b>bắt buộc</b> implements <i>NeonAdapter</i>. Tham số chính là class cần serialize.
  ```java
- public class AnimalAdapter implements ZarcelAdapter<ZarcelAnimal> {
+ public class AnimalAdapter implements NeonAdapter<NeonAnimal> {
      @Override
-     public void serialize(@NonNull ZarcelAnimal object, SerializedOutput writer) {
+     public void serialize(@NonNull NeonAnimal object, SerializedOutput writer) {
          // Do something
          /*
             Example: 
@@ -180,11 +180,11 @@ Một adapter <b>bắt buộc</b> implements <i>ZarcelAdapter</i>. Tham số ch�
      }
  
      @Override
-     public ZarcelAnimal createFromSerialized(SerializedInput reader) {
+     public NeonAnimal createFromSerialized(SerializedInput reader) {
          // Do something
           /*
              Example: 
-             return ZarcelAnimal.createObject(reader.readInt32());
+             return NeonAnimal.createObject(reader.readInt32());
            */
      }
  }
@@ -192,7 +192,7 @@ Một adapter <b>bắt buộc</b> implements <i>ZarcelAdapter</i>. Tham số ch�
  
   ```java
   
-  public class CarAdapter implements ZarcelAdapter<Car[]> {
+  public class CarAdapter implements NeonAdapter<Car[]> {
       @Override
       public void serialize(@NonNull Car[] object, SerializedOutput writer) {
           // Do something
@@ -212,13 +212,13 @@ Một adapter <b>bắt buộc</b> implements <i>ZarcelAdapter</i>. Tham số ch�
 
 ```java
 
- @Zarcel
+ @Neon
  public class World implements Serializable {
     
-    @Zarcel.Custom(adapter = AnimalAdapter.class)
-    ZarcelAnimal cat;
+    @Neon.Custom(adapter = AnimalAdapter.class)
+    NeonAnimal cat;
     
-    @Zarcel.Custom(adapter = CarAdapter.class)
+    @Neon.Custom(adapter = CarAdapter.class)
     Car[] cars;
     //...Methods
  }
@@ -227,11 +227,11 @@ Một adapter <b>bắt buộc</b> implements <i>ZarcelAdapter</i>. Tham số ch�
 
 ## Một số adapter có sẵn
 
-<pre> 
-implementation 'com.zing.zalo:zarcel-utils:0.4.0'
-</pre>
+```gradle
+implementation 'com.zing.zalo.neon:zarcel-utils:<version>'
+```
 
-### ZarcelDateAdapter 
+### NeonDateAdapter
 
 Adapter dùng cho Serialization kiểu java.lang.Date
 
@@ -239,10 +239,10 @@ Sử dụng:
 
 ```java
 
- @Zarcel
+ @Neon
  public class Human implements Serializable {
     
-    @Zarcel.Custom(adapter = DateZarcelAdapter.class)
+    @Neon.Custom(adapter = DateNeonAdapter.class)
     Date birthday;
     
     //...Methods
@@ -250,24 +250,24 @@ Sử dụng:
  
 ```
 
-### PolymorphismZarcelAdapter
+### PolymorphismNeonAdapter
 
 Adapter dùng để serialize các lớp con của một lớp cha, khi những lớp con này được sử dụng 'đa hình' và được khai báo như một lớp cha. 
 
-#### Bước một: Tạo một adapter extends PolymorphismZarcelAdapter
+#### Bước một: Tạo một adapter extends PolymorphismNeonAdapter
 
 Sau khi tạo xong, override phương thức như bên dưới: 
 
 ```java
 
-public class VehicleAdapter extends PolymorphismZarcelAdapter<ZarcelVehicle> {
+public class VehicleAdapter extends PolymorphismNeonAdapter<NeonVehicle> {
 
     @Override
     protected void onRegisterChildClasses() {
         try {
-            registryAdd(ZarcelVehicle.CAR, ZarcelCar.class);
-            registryAdd(ZarcelVehicle.BIKE, ZarcelBike.class);
-        } catch (ZarcelDuplicateException e) {
+            registryAdd(NeonVehicle.CAR, NeonCar.class);
+            registryAdd(NeonVehicle.BIKE, NeonBike.class);
+        } catch (NeonDuplicateException e) {
             e.printStackTrace();
         }
     }
@@ -291,11 +291,11 @@ Các phương thức được hỗ trợ:
 
 public class Street implements Serializable {
 
-    // Parent: ZarcelVehicle
-    // Child: ZarcelBike, ZarcelCar
-    // largestVehicle is ZarcelBike or ZarcelCar. 
-    @Zarcel.Custom(adapter = VehicleAdapter.class)
-    public ZarcelVehicle largestVehicle;
+    // Parent: NeonVehicle
+    // Child: NeonBike, NeonCar
+    // largestVehicle is NeonBike or NeonCar.
+    @Neon.Custom(adapter = VehicleAdapter.class)
+    public NeonVehicle largestVehicle;
     
     //...Methods
 }

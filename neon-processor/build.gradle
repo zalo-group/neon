@@ -1,0 +1,40 @@
+plugins {
+  id "net.ltgt.apt" version "0.18"
+  id "io.github.rockerhieu.versionberg" version "1.0.2"
+}
+
+apply plugin: 'java-library'
+apply plugin: 'idea'
+
+versionberg {
+  major LIB_VERSION_MAJOR
+  minor LIB_VERSION_MINOR
+  nameTemplate LIB_VERSION_NAME_TEMPLATE
+  gitDir new File("${rootDir.parent}/.git")
+}
+
+ext {
+  autoValueOutputDir = file("$buildDir/generated/source/apt/main")
+}
+idea.module {
+  excludeDirs -= file("$buildDir")
+  sourceDirs += autoValueOutputDir
+}
+
+dependencies {
+  implementation deps.findbugs
+  annotationProcessor deps.auto.value.core
+  compileOnly deps.auto.value.annotations
+  implementation deps.javapoet
+
+  implementation project(':neon-core')
+  implementation project(':neon-annotations')
+}
+
+sourceCompatibility = versions.sourceCompatibilityVersion
+targetCompatibility = versions.targetCompatibilityVersion
+compileJava.options.compilerArgs.add('-parameters')
+compileTestJava.options.compilerArgs.add('-parameters')
+ext.VERSION_NAME = versionberg.name
+
+apply from: '../gradle-mvn-push.gradle'

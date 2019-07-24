@@ -12,6 +12,8 @@ versionberg {
 }
 
 dependencies {
+  implementation deps.twitter.serial
+
   testImplementation deps.junit
 }
 

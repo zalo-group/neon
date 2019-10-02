@@ -13,7 +13,8 @@ versionberg {
 
 dependencies {
   implementation deps.twitter.serial
-
+  testImplementation project(':neon-core')
+  testImplementation project(':neon-annotations')
   testImplementation deps.junit
 }
 

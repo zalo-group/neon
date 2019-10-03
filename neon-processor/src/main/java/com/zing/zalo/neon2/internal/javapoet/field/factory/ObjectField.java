@@ -8,7 +8,7 @@ import com.zing.zalo.neon2.internal.javapoet.field.NeonField;
 /**
  * Created by Tien Loc Bui on 23/09/2019.
  */
-class ObjectField extends NeonField {
+class ObjectField extends BaseField {
     private ClassDescriptor fieldTypeDescriptor;
 
     ObjectField(FieldDescriptor descriptor) {

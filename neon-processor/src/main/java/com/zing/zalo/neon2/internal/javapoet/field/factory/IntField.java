@@ -9,7 +9,7 @@ import com.zing.zalo.neon2.internal.javapoet.field.NeonField;
 /**
  * Created by Tien Loc Bui on 11/09/2019.
  */
-class IntField extends NeonField {
+class IntField extends BaseField {
     IntField(FieldDescriptor descriptor) {
         super(descriptor);
     }

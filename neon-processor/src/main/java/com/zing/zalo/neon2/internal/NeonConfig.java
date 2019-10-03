@@ -5,6 +5,6 @@ package com.zing.zalo.neon2.internal;
  */
 public final class NeonConfig {
     public static final String INDENT_SPACE = "    ";
-    public static final String NEON_CLASS_PREFIX = "$Neon";
-    public static final String NEON_CLASS_POSTFIX = "__";
+    public static final String NEON_CLASS_PREFIX = "$Neon__";
+    public static final String NEON_CLASS_POSTFIX = "";
 }

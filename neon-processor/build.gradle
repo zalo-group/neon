@@ -26,8 +26,6 @@ dependencies {
   annotationProcessor deps.auto.value.core
   compileOnly deps.auto.value.annotations
   implementation deps.javapoet
-
-  implementation project(':neon-core')
   implementation project(':neon-annotations')
 }
 

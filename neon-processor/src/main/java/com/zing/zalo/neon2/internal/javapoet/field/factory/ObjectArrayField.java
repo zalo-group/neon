@@ -10,7 +10,7 @@ import com.zing.zalo.neon2.internal.javapoet.field.NeonField;
 /**
  * Created by Tien Loc Bui on 23/09/2019.
  */
-class ObjectArrayField extends NeonField {
+class ObjectArrayField extends BaseField {
     private static final String ITERATOR_VAR = "$i$";
     private static final String ARRAY_LENGTH_VAR = "$len$";
 

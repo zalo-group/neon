@@ -1,5 +1,6 @@
 package com.zing.zalo.neon2.internal.descriptor;
 
+import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -9,16 +10,18 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 
+import static javax.lang.model.element.ElementKind.FIELD;
+
 /**
  * Created by Tien Loc Bui on 12/09/2019.
  */
-public class FieldDescriptorImpl extends FieldDescriptor {
+public class FieldDescriptorImpl implements FieldDescriptor {
     private Messager messager;
     private Elements elementUtils;
     private Element mElement;
     private FieldType mType;
 
-    FieldDescriptorImpl(Messager messager, Elements elementUtils, Element element) {
+    private FieldDescriptorImpl(Messager messager, Elements elementUtils, Element element) {
         mElement = element;
         this.messager = messager;
         this.elementUtils = elementUtils;
@@ -49,10 +52,24 @@ public class FieldDescriptorImpl extends FieldDescriptor {
                 if (!(typeFromElement instanceof DeclaredType))
                     return null;
                 objectElement = (TypeElement) ((DeclaredType) typeFromElement).asElement();
-                return ClassDescriptor.parse(messager, elementUtils, objectElement);
+                return ClassDescriptorImpl.get(messager, elementUtils, objectElement);
 
             default:
                 return null;
         }
+    }
+
+    /**
+     * Parse {@link FieldDescriptor} from element received by annotations.
+     *
+     * @param messager     the {@link Messager} to print error, warning, etc ...
+     * @param elementUtils Can get in {@link AbstractProcessor}
+     * @param element      the element need to be converted to {@link FieldDescriptor}
+     * @return {@link FieldDescriptor}
+     */
+    public static FieldDescriptor get(Messager messager, Elements elementUtils, Element element) {
+        if (element == null || element.getKind() != FIELD)
+            return null;
+        return new FieldDescriptorImpl(messager, elementUtils, element);
     }
 }

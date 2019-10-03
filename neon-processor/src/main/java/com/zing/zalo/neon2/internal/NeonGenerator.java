@@ -13,10 +13,10 @@ import javax.lang.model.util.Elements;
 /**
  * Created by Tien Loc Bui on 30/08/2019.
  */
-public class NeonGenerator {
+public final class NeonGenerator {
     public static void processClass(Filer filer, Messager messager, Elements elementUtils, TypeElement typeElement) {
         // Create Class Descriptor
-        ClassDescriptor classDescriptor = ClassDescriptorImpl.parse(messager, elementUtils, typeElement);
+        ClassDescriptor classDescriptor = ClassDescriptorImpl.get(messager, elementUtils, typeElement);
         if (classDescriptor == null)
             return;
         NeonClass neonClass = NeonClassFactory.createClass(messager, elementUtils, classDescriptor);

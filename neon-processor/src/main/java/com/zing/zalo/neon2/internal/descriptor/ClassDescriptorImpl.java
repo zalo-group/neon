@@ -6,9 +6,11 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
@@ -20,7 +22,7 @@ import static com.zing.zalo.neon2.internal.NeonConfig.NEON_CLASS_PREFIX;
 /**
  * Created by Tien Loc Bui on 12/09/2019.
  */
-public class ClassDescriptorImpl extends ClassDescriptor {
+public class ClassDescriptorImpl implements ClassDescriptor {
     private Messager messager;
     private Elements elementUtils;
     private TypeElement mElement;
@@ -28,7 +30,7 @@ public class ClassDescriptorImpl extends ClassDescriptor {
     private List<FieldDescriptor> mFields = null;
     private List<AnnotationDescriptor> mAnnotations = null;
 
-    ClassDescriptorImpl(Messager messager, Elements elementUtils, TypeElement element) {
+    private ClassDescriptorImpl(Messager messager, Elements elementUtils, TypeElement element) {
         mElement = element;
         this.messager = messager;
         this.elementUtils = elementUtils;
@@ -86,7 +88,7 @@ public class ClassDescriptorImpl extends ClassDescriptor {
         List<? extends Element> elements = mElement.getEnclosedElements();
         mFields = new ArrayList<>();
         for (Element element : elements) {
-            FieldDescriptor field = FieldDescriptor.parse(messager, elementUtils, element);
+            FieldDescriptor field = FieldDescriptorImpl.get(messager, elementUtils, element);
             if (field != null && field.type() != FieldType.NONE)
                 mFields.add(field);
         }
@@ -103,8 +105,9 @@ public class ClassDescriptorImpl extends ClassDescriptor {
         mAnnotations = new ArrayList<>();
         List<? extends AnnotationMirror> annotationMirrors = mElement.getAnnotationMirrors();
         for (AnnotationMirror annotation : annotationMirrors) {
-            AnnotationDescriptor aDescriptor = AnnotationDescriptor.parse(messager, elementUtils, annotation);
-            mAnnotations.add(aDescriptor);
+            AnnotationDescriptor aDescriptor = AnnotationDescriptorImpl.get(messager, elementUtils, annotation);
+            if (aDescriptor != null)
+                mAnnotations.add(aDescriptor);
         }
         return mAnnotations;
     }
@@ -112,5 +115,19 @@ public class ClassDescriptorImpl extends ClassDescriptor {
     @Override
     public String getGeneratedNeonClassName() {
         return NEON_CLASS_PREFIX + getSimpleName() + NEON_CLASS_POSTFIX;
+    }
+
+    /**
+     * Parse {@link ClassDescriptor} from element received by annotations.
+     *
+     * @param messager     the {@link Messager} to print error, warning, etc ...
+     * @param elementUtils Can get in {@link AbstractProcessor}
+     * @param element      the element need to be converted to {@link ClassDescriptor}
+     * @return {@link ClassDescriptor}
+     */
+    public static ClassDescriptor get(Messager messager, Elements elementUtils, TypeElement element) {
+        if (element == null || element.getKind() != ElementKind.CLASS)
+            return null;
+        return new ClassDescriptorImpl(messager, elementUtils, element);
     }
 }

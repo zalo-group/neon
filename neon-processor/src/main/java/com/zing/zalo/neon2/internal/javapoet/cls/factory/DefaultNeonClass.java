@@ -104,7 +104,7 @@ class DefaultNeonClass implements NeonClass {
         // Serialize field
         List<NeonField> fields = getFields();
         for (NeonField field : fields) {
-            field.writeSerializeCode(methodBuilder, SERIALIZED_OUTPUT_VARIABLE, OBJECT_VARIABLE, mDescriptor);
+            field.writeSerializeCode(messager, methodBuilder, SERIALIZED_OUTPUT_VARIABLE, OBJECT_VARIABLE, mDescriptor);
         }
         // ----- End Object ----- //
         methodBuilder.addStatement("$L.writeObjectEnd()", SERIALIZED_OUTPUT_VARIABLE);
@@ -124,7 +124,6 @@ class DefaultNeonClass implements NeonClass {
                 OBJECT_VARIABLE,
                 TypeName.get(mDescriptor.typeMirror()));
         // ----- Read Object version with version ----- //
-//        methodBuilder.addStatement("$L.writeObjectStart($L)", SERIALIZED_OUTPUT_VARIABLE, mDescriptor.getVersion());
         methodBuilder.beginControlFlow("try");
         // Read version
         methodBuilder.addStatement("int $L = $L.readObjectStart($L)",
@@ -134,7 +133,7 @@ class DefaultNeonClass implements NeonClass {
         // Serialize field
         List<NeonField> fields = getFields();
         for (NeonField field : fields) {
-            field.writeDeserializeCode(methodBuilder, SERIALIZED_INPUT_VARIABLE, OBJECT_VARIABLE, mDescriptor);
+            field.writeDeserializeCode(messager, methodBuilder, SERIALIZED_INPUT_VARIABLE, OBJECT_VARIABLE, mDescriptor);
         }
         // ----- End Object ----- //
         methodBuilder.nextControlFlow("catch ($T ignored)", NeonEndObjectException.class)

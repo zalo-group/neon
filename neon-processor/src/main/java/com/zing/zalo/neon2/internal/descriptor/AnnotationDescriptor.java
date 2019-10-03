@@ -13,20 +13,20 @@ import javax.lang.model.util.Elements;
 /**
  * Created by Tien Loc Bui on 18/09/2019.
  */
-public abstract class AnnotationDescriptor {
+public interface AnnotationDescriptor {
     /**
      * Get simple class name.
      *
      * @return the simple class name
      */
-    public abstract String getSimpleName();
+    String getSimpleName();
 
     /**
      * Get full class name.
      *
      * @return the full class name
      */
-    public abstract String getFullName();
+    String getFullName();
 
     /**
      * Check equals
@@ -34,21 +34,5 @@ public abstract class AnnotationDescriptor {
      * @param annotation another annotation class
      * @return true if equals
      */
-    public abstract boolean equals(Class<? extends Annotation> annotation);
-
-    /**
-     * Parse {@link AnnotationDescriptor} from element type
-     *
-     * @param messager         the {@link Messager} to print error, warning, etc ...
-     * @param elementUtils     Can get in {@link AbstractProcessor}
-     * @param annotationMirror the element need to be converted to {@link AnnotationDescriptor}
-     * @return {@link AnnotationDescriptor} or null if type is not annotation.
-     */
-    public static AnnotationDescriptor parse(Messager messager, Elements elementUtils, AnnotationMirror annotationMirror) {
-        if (annotationMirror == null || annotationMirror.getAnnotationType().asElement().getKind() != ElementKind.ANNOTATION_TYPE)
-            return null;
-        if (!(annotationMirror.getAnnotationType().asElement() instanceof TypeElement))
-            return null;
-        return new AnnotationDescriptorImpl(messager, elementUtils, annotationMirror);
-    }
+    boolean equals(Class<? extends Annotation> annotation);
 }

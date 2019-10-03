@@ -12,7 +12,7 @@ import javax.lang.model.util.Elements;
 /**
  * Created by Tien Loc Bui on 30/08/2019.
  */
-public class NeonClassFactory {
+public final class NeonClassFactory {
     public static NeonClass createClass(Messager messager, Elements elementUtils, ClassDescriptor descriptor) {
         // NeonClass will be created only if the class is annotated by NeonObject
         if (!descriptor.containsAnnotation(NeonObject.class))

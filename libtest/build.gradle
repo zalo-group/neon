@@ -27,9 +27,7 @@ dependencies {
   implementation deps.appcompat
   implementation deps.twitter.serial
   testImplementation deps.junit
-  implementation project(':neon-core')
   implementation project(':neon-annotations')
-  implementation project(':neon-utils')
   annotationProcessor project(':neon-processor')
 }
 

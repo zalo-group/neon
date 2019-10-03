@@ -12,7 +12,7 @@ versionberg {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation project(':neon-core')
+  implementation deps.twitter.serial
 }
 
 sourceCompatibility = versions.sourceCompatibilityVersion

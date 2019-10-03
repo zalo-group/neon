@@ -1,1 +1,2 @@
-include ':neon-processor', ':libtest', ':neon-core', ':neon-annotations', ':neon-utils'
+rootProject.name = 'neon'
+include ':neon-processor', ':libtest', ':neon-annotations'
